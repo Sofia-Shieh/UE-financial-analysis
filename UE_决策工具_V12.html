@@ -1,0 +1,1690 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UE5 报价方案分析 · 决策支持 2026–2036</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+/* ══════════════════════════════════════════
+   TOKEN SYSTEM
+   字号 3档: 12px / 14px / 20px
+   字族 2个: --f(正文) / --fm(数字数据)
+   方案色彩重映射:
+     旧报价 → 中性蓝灰  #8C7355
+     新AAA  → 主蓝      #1C5499
+     AA方案一 → 紫灰    #5B4B8A
+     AA方案二 → 蓝绿    #1B6B6B
+     绿色 = 推荐/节省语义, 红色 = 风险/超支语义
+══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Text */
+  --t-primary:#111827;
+  --t-secondary:#374151;
+  --t-muted:#6B7280;
+  --t-faint:#9CA3AF;
+
+  /* Surface */
+  --bg:#F3F6FB;
+  --surface:#FFFFFF;
+  --surface-2:rgba(248,250,253,.9);
+  --border:rgba(17,24,39,.08);
+  --border-strong:rgba(17,24,39,.14);
+
+  /* Scheme colors — neutral palette, no red for schemes */
+  --c-old:#8C7355;       /* 旧报价 — 暖石灰 */
+  --c-old-bg:rgba(140,115,85,.07);
+  --c-old-bd:rgba(140,115,85,.18);
+  --c-aaa:#1C5499;       /* 新AAA — 主蓝 */
+  --c-aaa-bg:rgba(28,84,153,.07);
+  --c-aaa-bd:rgba(28,84,153,.18);
+  --c-aa1:#5B4B8A;       /* AA方案一 — 紫 */
+  --c-aa1-bg:rgba(91,75,138,.07);
+  --c-aa1-bd:rgba(91,75,138,.18);
+  --c-aa2:#1B6B6B;       /* AA方案二 — 蓝绿 */
+  --c-aa2-bg:rgba(27,107,107,.07);
+  --c-aa2-bd:rgba(27,107,107,.18);
+
+  /* Semantic — strictly save/risk */
+  --save:#0F7B4A;        /* 节省/推荐 */
+  --save-bg:rgba(15,123,74,.07);
+  --save-bd:rgba(15,123,74,.18);
+  --risk:#C0392B;        /* 风险/超支 */
+  --risk-bg:rgba(192,57,43,.07);
+  --risk-bd:rgba(192,57,43,.16);
+  --warn:#B45309;        /* 注意 */
+  --warn-bg:rgba(180,83,9,.07);
+
+  /* Header */
+  --hdr-bg:#0D1926;
+
+  /* Typography */
+  --f:'PingFang SC','Inter','Noto Sans SC',sans-serif;
+  --fm:'Inter','PingFang SC',sans-serif;
+
+  /* Size scale */
+  --sz-sm:12px;
+  --sz-md:14px;
+  --sz-lg:20px;
+
+  /* Radius */
+  --r-sm:8px;
+  --r-md:12px;
+  --r-lg:16px;
+  --r-xl:20px;
+
+  /* Shadow */
+  --sh-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --sh-lg:0 12px 32px rgba(0,0,0,.10),0 4px 8px rgba(0,0,0,.06);
+}
+
+html{scroll-behavior:smooth;scroll-padding-top:60px}
+body{font-family:var(--f);background:var(--bg);color:var(--t-primary);-webkit-font-smoothing:antialiased;line-height:1.6}
+
+/* ══════════ HEADER ══════════ */
+.hdr{
+  background:var(--hdr-bg);
+  padding:32px 48px 28px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.hdr-inner{max-width:1400px;margin:0 auto}
+.hdr-top{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.hdr-eyebrow{
+  font-family:var(--fm);font-size:var(--sz-sm);
+  color:rgba(255,255,255,.42);letter-spacing:.12em;text-transform:uppercase;
+}
+.hdr-sep{color:rgba(255,255,255,.18)}
+.hdr-title{font-family:var(--f);font-size:28px;font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1.15;margin-bottom:4px}
+.hdr-subtitle{font-family:var(--fm);font-size:var(--sz-sm);color:rgba(255,255,255,.4);letter-spacing:.05em}
+
+/* 核心结论横幅 — 第一视觉焦点 */
+.conclusion-banner{
+  display:grid;grid-template-columns:auto 1fr auto auto;
+  align-items:center;gap:20px;
+  background:rgba(28,84,153,.18);
+  border:1px solid rgba(28,84,153,.35);
+  border-radius:var(--r-lg);
+  padding:18px 24px;
+  margin-top:16px;
+}
+.cb-icon{font-size:22px;flex-shrink:0}
+.cb-main{}
+.cb-verdict{font-family:var(--f);font-size:var(--sz-lg);font-weight:700;color:#fff;letter-spacing:-.01em;line-height:1.2}
+.cb-verdict span{color:rgba(255,255,255,.55);font-weight:400;font-size:var(--sz-md)}
+.cb-sub{font-family:var(--fm);font-size:var(--sz-sm);color:rgba(255,255,255,.52);margin-top:3px}
+.cb-stat{text-align:right;padding:0 8px}
+.cb-stat-val{font-family:var(--fm);font-size:var(--sz-lg);font-weight:600;color:#fff}
+.cb-stat-lbl{font-family:var(--fm);font-size:11px;color:rgba(255,255,255,.38);letter-spacing:.06em;margin-top:2px}
+.cb-divider{width:1px;height:40px;background:rgba(255,255,255,.12);flex-shrink:0}
+
+/* ══════════ NAV ══════════ */
+.nav-bar{
+  position:sticky;top:0;z-index:10;
+  background:rgba(255,255,255,.94);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.nav-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;align-items:center;gap:2px;
+  padding:0 48px;overflow-x:auto;
+}
+.nav-link{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:12px 14px;
+  text-decoration:none;
+  font-family:var(--f);font-size:var(--sz-sm);font-weight:500;
+  color:var(--t-muted);white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+}
+.nav-link:hover{color:var(--t-primary);border-color:var(--c-aaa)}
+.nav-num{font-family:var(--fm);font-size:11px;color:var(--t-faint)}
+
+/* ══════════ LAYOUT ══════════ */
+.page{max-width:1400px;margin:0 auto;padding:28px 48px 80px}
+.section{margin-bottom:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-sm)}
+.section-hd{
+  display:flex;align-items:center;gap:12px;
+  padding:20px 24px 16px;
+  border-bottom:1px solid var(--border);
+}
+.section-num{
+  font-family:var(--fm);font-size:11px;color:var(--c-aaa);
+  background:var(--c-aaa-bg);border:1px solid var(--c-aaa-bd);
+  padding:3px 9px;border-radius:999px;font-weight:600;flex-shrink:0;
+}
+.section-title{font-family:var(--f);font-size:var(--sz-lg);font-weight:700;color:var(--t-primary);letter-spacing:-.02em;flex:1}
+.section-action{margin-left:auto}
+.section-body{padding:20px 24px}
+
+/* ══════════ SCHEME CARDS ══════════ */
+.cards-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 24px 20px}
+.scard{
+  border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 16px;
+  position:relative;overflow:hidden;
+  transition:box-shadow .2s,transform .18s;
+  background:var(--surface);
+}
+.scard:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.scard-top-bar{position:absolute;top:0;left:0;right:0;height:3px}
+.scard.c-old .scard-top-bar{background:var(--c-old)}
+.scard.c-aaa .scard-top-bar{background:var(--c-aaa)}
+.scard.c-aa1 .scard-top-bar{background:var(--c-aa1)}
+.scard.c-aa2 .scard-top-bar{background:var(--c-aa2)}
+.scard-badge{
+  position:absolute;top:12px;right:12px;
+  font-family:var(--fm);font-size:11px;padding:2px 8px;border-radius:999px;
+  font-weight:600;
+}
+.scard-badge.recommended{background:var(--save-bg);color:var(--save);border:1px solid var(--save-bd)}
+.scard-label{font-family:var(--fm);font-size:11px;color:var(--t-muted);letter-spacing:.08em;text-transform:uppercase;font-weight:500;margin-bottom:10px}
+.scard-amount{font-family:var(--fm);font-size:28px;font-weight:600;letter-spacing:-.03em;line-height:1;margin-bottom:4px}
+.scard.c-old .scard-amount{color:var(--c-old)}
+.scard.c-aaa .scard-amount{color:var(--c-aaa)}
+.scard.c-aa1 .scard-amount{color:var(--c-aa1)}
+.scard.c-aa2 .scard-amount{color:var(--c-aa2)}
+.scard-usd{font-family:var(--fm);font-size:var(--sz-sm);color:var(--t-faint);margin-bottom:14px}
+.scard-divider{height:1px;background:var(--border);margin-bottom:12px}
+.scard-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.scard-row:last-child{margin-bottom:0}
+.scard-rlbl{font-size:var(--sz-sm);color:var(--t-muted)}
+.scard-rval{font-family:var(--fm);font-size:var(--sz-sm);font-weight:600;color:var(--t-secondary)}
+
+/* ══════════ DECISION SUMMARY ══════════ */
+.decision-body{padding:0 24px 24px}
+.decision-conclusion{
+  background:var(--c-aaa-bg);border:1px solid var(--c-aaa-bd);
+  border-left:4px solid var(--c-aaa);
+  border-radius:var(--r-md);padding:16px 20px;margin-bottom:16px;
+}
+.decision-conclusion-title{font-size:var(--sz-lg);font-weight:700;color:var(--t-primary);margin-bottom:8px;letter-spacing:-.01em}
+.decision-conclusion-body{font-size:var(--sz-md);color:var(--t-secondary);line-height:1.75}
+.decision-conclusion-body strong{color:var(--t-primary);font-weight:700}
+
+.decision-points{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.dp{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-md);
+  background:var(--surface-2);
+}
+.dp-icon{
+  width:28px;height:28px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;margin-top:1px;
+}
+.dp-icon.save{background:var(--save-bg)}
+.dp-icon.risk{background:var(--risk-bg)}
+.dp-icon.warn{background:var(--warn-bg)}
+.dp-icon.info{background:var(--c-aaa-bg)}
+.dp-text{font-size:var(--sz-md);color:var(--t-secondary);line-height:1.65}
+.dp-text strong{color:var(--t-primary);font-weight:700}
+
+.decision-kv-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.dkv{
+  padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-md);
+  background:var(--surface-2);
+}
+.dkv-lbl{font-family:var(--fm);font-size:11px;color:var(--t-muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px}
+.dkv-val{font-family:var(--fm);font-size:var(--sz-lg);font-weight:600;color:var(--t-primary)}
+.dkv-sub{font-size:var(--sz-sm);color:var(--t-muted);margin-top:4px}
+
+/* ══════════ BREAKEVEN STRIP ══════════ */
+.be-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.be-card{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;border:1px solid var(--border);border-radius:var(--r-md);
+  background:var(--surface-2);
+}
+.be-card-line{width:3px;height:36px;border-radius:2px;flex-shrink:0}
+.be-content{}
+.be-lbl{font-size:var(--sz-sm);color:var(--t-muted);margin-bottom:4px}
+.be-val{font-family:var(--fm);font-size:var(--sz-lg);font-weight:600}
+.be-hint{font-size:var(--sz-sm);color:var(--t-muted);margin-top:2px}
+
+/* ══════════ CHART ══════════ */
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:4px}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:var(--sz-sm);color:var(--t-muted);font-weight:500}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.chart-wrap{position:relative;width:100%;aspect-ratio:2/1;margin-top:16px}
+.chart-tabs{display:flex;gap:2px;background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:3px}
+.ctab{font-size:var(--sz-sm);padding:5px 14px;border-radius:999px;border:none;cursor:pointer;font-family:var(--f);color:var(--t-muted);background:transparent;transition:all .15s;font-weight:500}
+.ctab.on{background:#fff;color:var(--t-primary);font-weight:600;box-shadow:var(--sh-sm)}
+
+/* ══════════ TABLE SHARED ══════════ */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{
+  font-family:var(--fm);font-size:12px;color:var(--t-muted);
+  font-weight:600;padding:10px 12px;text-align:right;
+  border-bottom:2px solid var(--border-strong);
+  white-space:nowrap;letter-spacing:.04em;text-transform:uppercase;background:rgba(243,246,251,.7);
+}
+th:first-child{text-align:left}
+td{
+  font-family:var(--fm);font-size:13px;
+  padding:9px 12px;text-align:right;border-bottom:1px solid var(--border);
+  color:var(--t-secondary);
+}
+td:first-child{text-align:left;font-weight:600;color:var(--t-primary)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(28,84,153,.03)}
+.tr-launch td{background:rgba(180,83,9,.04)}
+.tr-launch td:first-child{color:var(--warn);font-weight:700}
+.tr-be td{background:rgba(28,84,153,.04)}
+.tr-prepay td:first-child{color:var(--c-aaa);font-weight:700}
+.tr-total td{background:#F3F6FB;font-weight:700;color:var(--t-primary)}
+.tr-total td:first-child{font-weight:700}
+.cell-best{font-weight:700;color:var(--c-aaa)!important}
+.cell-best td{background:rgba(28,84,153,.07)!important}
+.diff-pos{color:var(--save);font-weight:600}
+.diff-neg{color:var(--risk);font-weight:600}
+.pb-ok{color:var(--save)}
+.pb-low{color:var(--warn)}
+.pb-zero{color:var(--risk);font-weight:700}
+.pb-in{color:var(--save);font-weight:600}
+
+/* Year table header colors */
+.th-old{color:var(--c-old)!important}
+.th-aaa{color:var(--c-aaa)!important}
+.th-aa1{color:var(--c-aa1)!important}
+.th-aa2{color:var(--c-aa2)!important}
+
+/* Dark table header */
+.tbl-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;
+  background:var(--hdr-bg);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.tbl-hdr-title{font-family:var(--f);font-size:var(--sz-md);font-weight:600;color:#fff}
+.tbl-hdr-sub{font-family:var(--fm);font-size:11px;color:rgba(255,255,255,.36);letter-spacing:.05em}
+
+/* ══════════ SCENARIO ══════════ */
+.scenario-sliders{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px}
+.slider-group{display:flex;flex-direction:column;gap:8px}
+.slider-lbl{font-size:var(--sz-md);color:var(--t-secondary);font-weight:600}
+.slider-hint{font-size:var(--sz-sm);color:var(--t-muted)}
+.slider-row{display:flex;align-items:center;gap:10px}
+.slider{
+  flex:1;-webkit-appearance:none;appearance:none;height:5px;border-radius:999px;
+  background:linear-gradient(90deg,var(--c-aaa) var(--pct,50%),rgba(28,84,153,.15) var(--pct,50%));
+  cursor:pointer;
+}
+.slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:#fff;border:2.5px solid var(--c-aaa);
+  box-shadow:0 2px 8px rgba(28,84,153,.3);cursor:pointer;
+  transition:transform .12s;
+}
+.slider:hover::-webkit-slider-thumb{transform:scale(1.15)}
+/* Mobile touch target */
+@media(max-width:768px){
+  .slider::-webkit-slider-thumb{width:44px;height:44px}
+}
+.slider-val{font-family:var(--fm);font-size:var(--sz-md);font-weight:600;color:var(--c-aaa);min-width:64px;text-align:right}
+
+.scenario-results{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:18px;margin-bottom:14px;
+}
+.scr-item{text-align:center}
+.scr-lbl{font-family:var(--fm);font-size:11px;color:var(--t-muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.scr-val{font-family:var(--fm);font-size:24px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.scr-sub{font-family:var(--fm);font-size:var(--sz-sm);color:var(--t-muted);margin-top:5px}
+
+/* ══════════ BREAKEVEN DETAIL PANEL ══════════ */
+.be-detail-panel{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:16px 18px;margin-top:14px;
+}
+.be-detail-title{font-size:var(--sz-md);font-weight:700;color:var(--t-primary);margin-bottom:12px}
+.be-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.be-detail-item{
+  padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
+}
+.be-detail-lbl{font-size:var(--sz-sm);color:var(--t-muted);margin-bottom:5px}
+.be-detail-val{font-family:var(--fm);font-size:var(--sz-lg);font-weight:600}
+.scenario-insight{
+  font-size:var(--sz-md);color:var(--t-secondary);line-height:1.8;
+  border-left:3px solid var(--c-aaa);padding-left:14px;
+}
+.scenario-insight strong{color:var(--t-primary);font-weight:700}
+.scenario-rec{
+  margin-top:12px;padding:12px 14px;
+  background:var(--save-bg);border:1px solid var(--save-bd);border-radius:var(--r-md);
+  font-size:var(--sz-md);color:var(--t-secondary);line-height:1.7;
+}
+.scenario-rec strong{color:var(--save);font-weight:700}
+
+/* ══════════ SENSITIVITY ══════════ */
+.sens-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sens-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden}
+.sens-card-hd{padding:16px 20px 12px;border-bottom:1px solid var(--border)}
+.sens-card-title{font-size:var(--sz-md);font-weight:700;color:var(--t-primary);margin-bottom:4px}
+.sens-card-desc{font-size:var(--sz-sm);color:var(--t-muted);line-height:1.6}
+.sens-conclusion{
+  margin:12px 20px;padding:10px 14px;border-radius:var(--r-md);
+  font-size:var(--sz-sm);line-height:1.65;
+}
+.sens-conclusion.aaa{background:var(--c-aaa-bg);border:1px solid var(--c-aaa-bd);color:var(--t-secondary)}
+.sens-conclusion.aaa strong{color:var(--c-aaa)}
+.sens-conclusion.save{background:var(--save-bg);border:1px solid var(--save-bd);color:var(--t-secondary)}
+.sens-conclusion.save strong{color:var(--save)}
+.sens-table-wrap{padding:0 0 4px}
+.sens-table{width:100%;border-collapse:collapse}
+.sens-table th{background:transparent;border-bottom:1px solid var(--border-strong)}
+.sens-table .hl-row td{background:rgba(28,84,153,.04)}
+.tag{border-radius:999px;padding:2px 8px;font-family:var(--fm);font-size:11px;font-weight:600}
+.tag.best{background:var(--c-aaa-bg);color:var(--c-aaa);border:1px solid var(--c-aaa-bd)}
+.tag.warn{background:var(--risk-bg);color:var(--risk);border:1px solid var(--risk-bd)}
+
+/* ══════════ RATE CARDS ══════════ */
+.rate-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 24px 20px}
+.rate-card{
+  border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;
+  transition:box-shadow .18s,transform .18s;background:var(--surface);
+}
+.rate-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.rate-accent{height:3px}
+.rate-card.c-old .rate-accent{background:var(--c-old)}
+.rate-card.c-aaa .rate-accent{background:var(--c-aaa)}
+.rate-card.c-aa1 .rate-accent{background:var(--c-aa1)}
+.rate-card.c-aa2 .rate-accent{background:var(--c-aa2)}
+.rate-hd{padding:16px 18px 12px}
+.rate-label{font-family:var(--fm);font-size:11px;color:var(--t-muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-weight:500}
+.rate-lic{font-family:var(--fm);font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1}
+.rate-lic-sub{font-size:var(--sz-sm);color:var(--t-muted);margin-top:4px}
+.rate-tiers{border-top:1px solid var(--border)}
+.rate-tier{display:flex;justify-content:space-between;align-items:center;padding:8px 18px;border-bottom:1px solid rgba(0,0,0,.04);font-size:var(--sz-sm)}
+.rate-tier:last-child{border-bottom:none}
+.rate-tier-lbl{color:var(--t-muted)}
+.rate-tier-val{font-family:var(--fm);font-weight:600}
+
+/* ══════════ RISK/BENEFIT STRIP ══════════ */
+.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--border);margin:0 24px 20px}
+.risk-col{padding:18px 20px}
+.risk-col.pro{background:var(--save-bg)}
+.risk-col.con{background:var(--risk-bg)}
+.risk-col-hd{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.risk-col-title{font-size:var(--sz-md);font-weight:700}
+.risk-col.pro .risk-col-title{color:var(--save)}
+.risk-col.con .risk-col-title{color:var(--risk)}
+.risk-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;font-size:var(--sz-sm);color:var(--t-secondary);line-height:1.6}
+.risk-item:last-child{margin-bottom:0}
+.risk-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.risk-col.pro .risk-dot{background:var(--save)}
+.risk-col.con .risk-dot{background:var(--risk)}
+
+/* ══════════ NOTE BAR ══════════ */
+.note-bar{
+  margin:0 24px 20px;padding:12px 16px;
+  background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--c-aaa);
+  border-radius:var(--r-md);font-size:var(--sz-sm);color:var(--t-secondary);line-height:1.7;
+}
+.note-bar strong{color:var(--t-primary);font-weight:700}
+
+/* ══════════ FOOTER ══════════ */
+.doc-footer{
+  margin-top:16px;padding:16px 24px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+}
+.footer-text{font-family:var(--fm);font-size:15px;color:var(--t-muted);line-height:1.8}
+.footer-tags{display:flex;gap:8px;flex-wrap:wrap}
+.footer-tag{font-family:var(--fm);font-size:14px;padding:3px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--border);color:var(--t-muted)}
+
+/* ══════════ YEAR TAG CHIPS ══════════ */
+.yr-chip{
+  display:inline-block;font-family:var(--fm);font-size:10px;
+  padding:1px 6px;border-radius:999px;margin-left:5px;font-weight:600;vertical-align:middle;
+}
+.yr-chip.launch{background:var(--warn-bg);color:var(--warn)}
+.yr-chip.be{background:var(--c-aaa-bg);color:var(--c-aaa)}
+.yr-chip.prepay{background:var(--c-aaa-bg);color:var(--c-aaa)}
+
+/* ══════════ RESPONSIVE ══════════ */
+@media(max-width:1100px){
+  .cards-grid,.rate-grid{grid-template-columns:1fr 1fr}
+  .be-row{grid-template-columns:1fr 1fr}
+  .decision-points{grid-template-columns:1fr}
+  .decision-kv-row{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .hdr{padding:20px 20px 16px}
+  .hdr-title{font-size:20px}
+  .conclusion-banner{grid-template-columns:auto 1fr;grid-template-rows:auto auto}
+  .cb-stat,.cb-divider{display:none}
+  .page{padding:16px 16px 60px}
+  .nav-inner{padding:0 16px}
+  .section-body,.section-hd,.decision-body{padding-left:16px;padding-right:16px}
+  .rate-grid,.cards-grid{padding-left:16px;padding-right:16px}
+  .scenario-sliders{grid-template-columns:1fr}
+  .scenario-results{grid-template-columns:1fr 1fr}
+  .sens-grid{grid-template-columns:1fr}
+  .decision-kv-row{grid-template-columns:1fr 1fr}
+  .be-row,.be-detail-grid{grid-template-columns:1fr}
+  .risk-grid{grid-template-columns:1fr}
+}
+@media(max-width:500px){
+  .cards-grid,.rate-grid{grid-template-columns:1fr}
+  .scenario-results,.decision-kv-row{grid-template-columns:1fr}
+}
+
+/* ══════ RATE LADDER (分成费率阶梯) ══════ */
+.rate-ladder{display:flex;flex-direction:column;gap:0}
+.rl-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:12px}
+.rl-row:last-child{border-bottom:none;padding-bottom:0}
+.rl-range{color:var(--t-muted);font-size:11px;padding-right:8px}
+.rl-rate{font-family:var(--fm);font-weight:600;font-size:12px;white-space:nowrap}
+.rl-row.rl-min{margin-top:2px;padding-top:5px;border-top:1px dashed rgba(0,0,0,.1);border-bottom:none}
+.rl-row.rl-min .rl-range{font-weight:500}
+
+/* prefers-reduced-motion */
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  .slider::-webkit-slider-thumb{transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-top">
+      <span class="hdr-eyebrow">Unreal Engine · License Cost Analysis</span>
+      <span class="hdr-sep">·</span>
+      <span class="hdr-eyebrow">内部决策支持工具</span>
+      <span class="hdr-sep">·</span>
+      <span class="hdr-eyebrow">2026 – 2036</span>
+    </div>
+    <div class="hdr-title">UE5 报价方案对比分析</div>
+    <div class="hdr-subtitle">旧报价 &nbsp;/&nbsp; 新AAA &nbsp;/&nbsp; 新AA 方案一 &nbsp;/&nbsp; 新AA 方案二 丨 FPS/MOBA/沙盒 丨 累计阶梯费率 丨 2026-2036年支出测算</div>
+
+  </div>
+</header>
+
+<!-- ══════════ NAV ══════════ -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a href="#sec01" class="nav-link"><span class="nav-num">01</span> 方案总览</a>
+    <a href="#sec02" class="nav-link"><span class="nav-num">02</span> 决策摘要</a>
+    <a href="#sec03" class="nav-link"><span class="nav-num">03</span> 支出走势</a>
+    <a href="#sec04" class="nav-link"><span class="nav-num">04</span> 场景分析</a>
+    <a href="#sec05" class="nav-link"><span class="nav-num">05</span> NPV敏感性</a>
+    <a href="#sec06" class="nav-link"><span class="nav-num">06</span> 逐年明细</a>
+    <a href="#sec-app" class="nav-link"><span class="nav-num">附</span> 报价条款</a>
+  </div>
+</nav>
+
+<main class="page">
+
+<!-- ══════════ 01 方案总览 ══════════ -->
+<div class="section" id="sec01">
+  <div class="section-hd">
+    <span class="section-num">01</span>
+    <span class="section-title">四方案 11 年累计支出总览</span>
+    <span style="font-family:var(--fm);font-size:11px;color:var(--t-muted)">人民币 · 含税 · 累计阶梯 · 基准 $500M 流水/项目</span>
+  </div>
+  <div class="cards-grid">
+    <!-- 旧报价 -->
+    <div class="scard c-old">
+      <div class="scard-top-bar"></div>
+      <div class="scard-label">旧报价 · 现行协议</div>
+      <div class="scard-amount" id="v-old-rmb">—</div>
+      <div class="scard-usd" id="v-old-usd">—</div>
+      <div class="scard-divider"></div>
+      <div class="scard-row"><span class="scard-rlbl">NPV @2%</span><span class="scard-rval" id="v-old-npv">—</span></div>
+      <div class="scard-row"><span class="scard-rlbl">年均支出</span><span class="scard-rval" id="v-old-avg">—</span></div>
+    </div>
+    <!-- 新 AAA -->
+    <div class="scard c-aaa">
+      <div class="scard-top-bar"></div>
+      <div class="scard-badge recommended" id="v-aaa-badge">推荐方案</div>
+      <div class="scard-label">新报价 AAA</div>
+      <div class="scard-amount" id="v-aaa-rmb">—</div>
+      <div class="scard-usd" id="v-aaa-usd">—</div>
+      <div class="scard-divider"></div>
+      <div class="scard-row"><span class="scard-rlbl">NPV @2%</span><span class="scard-rval" id="v-aaa-npv">—</span></div>
+      <div class="scard-row"><span class="scard-rlbl">年均支出</span><span class="scard-rval" id="v-aaa-avg">—</span></div>
+    </div>
+    <!-- 新 AA 方案一 -->
+    <div class="scard c-aa1">
+      <div class="scard-top-bar"></div>
+      <div class="scard-label">新AA 方案一 · $750万 Lic</div>
+      <div class="scard-amount" id="v-aa1-rmb">—</div>
+      <div class="scard-usd" id="v-aa1-usd">—</div>
+      <div class="scard-divider"></div>
+      <div class="scard-row"><span class="scard-rlbl">NPV @2%</span><span class="scard-rval" id="v-aa1-npv">—</span></div>
+      <div class="scard-row"><span class="scard-rlbl">年均支出</span><span class="scard-rval" id="v-aa1-avg">—</span></div>
+    </div>
+    <!-- 新 AA 方案二 -->
+    <div class="scard c-aa2">
+      <div class="scard-top-bar"></div>
+      <div class="scard-label">新AA 方案二 · $500万 Lic</div>
+      <div class="scard-amount" id="v-aa2-rmb">—</div>
+      <div class="scard-usd" id="v-aa2-usd">—</div>
+      <div class="scard-divider"></div>
+      <div class="scard-row"><span class="scard-rlbl">NPV @2%</span><span class="scard-rval" id="v-aa2-npv">—</span></div>
+      <div class="scard-row"><span class="scard-rlbl">年均支出</span><span class="scard-rval" id="v-aa2-avg">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 02 决策摘要 ══════════ -->
+<div class="section" id="sec02">
+  <div class="section-hd">
+    <span class="section-num">02</span>
+    <span class="section-title">决策摘要</span>
+  </div>
+  <div class="decision-body">
+    <!-- 核心背景 -->
+    <div class="decision-conclusion">
+      <div class="decision-conclusion-title">新报价方案的核心逻辑：以前期投入换取长期分成优惠</div>
+      <div class="decision-conclusion-body">
+        UE 新方案允许我们自行对游戏进行评级（AAA或AA），不同评级对应不同的License费用与流水分成比例。
+        新报价AAA方案以<strong>更高的License费用（$1,500万/项目）+ $5,000万预充值</strong>，换取显著更低的流水分成比例（最低 <strong>0.25%</strong>）；
+        而AA方案虽然License费用较低，但稳定期流水分成比例（≥ 0.75%）与旧报价持平甚至更高，综合成本无明显优势。
+      </div>
+    </div>
+
+    <!-- 四个要点 -->
+    <div class="decision-points">
+      <div class="dp">
+        <div class="dp-icon info">📐</div>
+        <div class="dp-text"><strong>AA方案暂无切换价值：</strong>AA方案一的License费用高于旧报价，且稳定期分成费率（0.75%）与旧报价相同；AA方案二分成费率更高（稳定期≥1.25%）。两套AA方案在11年维度均不具备成本优势。</div>
+      </div>
+      <div class="dp">
+        <div class="dp-icon warn">⏳</div>
+        <div class="dp-text"><strong>AAA方案的支出节奏：</strong>前期须在2026–2027年预付$5,000万预充值，叠加更高License费，导致上线初期支出高于旧报价。但随着游戏持续运营，低分成费率的优势会持续累积，预计到 <strong>2033年</strong>完成累计支出的反超。</div>
+      </div>
+      <div class="dp">
+        <div class="dp-icon risk">🎯</div>
+        <div class="dp-text"><strong>关键前提——流水规模：</strong>三款游戏（FPS/MOBA/沙盒）年流水须<strong>各超约$240M</strong>，选择AAA方案才能实现综合成本更低。流水越高，分成费率优势越显著，差距持续扩大。</div>
+      </div>
+      <div class="dp">
+        <div class="dp-icon save">📊</div>
+        <div class="dp-text"><strong>资金成本的影响：</strong>折现率≤6% 时，AAA方案的净现值（NPV）优于旧报价。当前市场资金成本约2–5%，具备充足安全边际；折现率超过6%后旧报价NPV开始反超。</div>
+      </div>
+    </div>
+
+    <!-- 四项关键数据 -->
+    <div class="decision-kv-row">
+      <div class="dkv">
+        <div class="dkv-lbl">盈亏平衡年份</div>
+        <div class="dkv-val" id="db-be" style="color:var(--c-aaa)">2033 年</div>
+        <div class="dkv-sub">上线第5年，此后持续节省</div>
+      </div>
+      <div class="dkv">
+        <div class="dkv-lbl">稳定期年均节省</div>
+        <div class="dkv-val" id="db-ann-save" style="color:var(--save)">—</div>
+        <div class="dkv-sub">新AAA vs 旧报价，$500M流水测算</div>
+      </div>
+      <div class="dkv">
+        <div class="dkv-lbl">AAA 合算流水临界</div>
+        <div class="dkv-val" style="color:var(--c-aaa)">$250M / 项目</div>
+        <div class="dkv-sub">超过后优势随流水线性放大</div>
+      </div>
+      <div class="dkv">
+        <div class="dkv-lbl">折现率安全范围</div>
+        <div class="dkv-val" style="color:var(--save)">≤ 6%</div>
+        <div class="dkv-sub">当前资金成本2%，处于安全范围内</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 03 支出走势 ══════════ -->
+<div class="section" id="sec03">
+  <div class="section-hd">
+    <span class="section-num">03</span>
+    <span class="section-title">支出走势与持平年份</span>
+    <div class="chart-tabs section-action">
+      <button class="ctab on" id="csw-cum" onclick="switchChart('cum')">累计支出</button>
+      <button class="ctab" id="csw-ann" onclick="switchChart('ann')">当年支出</button>
+      <button class="ctab" id="csw-annNet" onclick="switchChart('annNet')">累计运营成本</button>
+    </div>
+  </div>
+  <div class="section-body">
+    <!-- 持平年份 -->
+    <div class="be-row">
+      <div class="be-card">
+        <div class="be-card-line" style="background:var(--c-aaa)"></div>
+        <div class="be-content">
+          <div class="be-lbl">旧报价 vs 新AAA · 持平年</div>
+          <div class="be-val" id="be-aaa" style="color:var(--c-aaa)">—</div>
+          <div class="be-hint">此后AAA方案持续节省</div>
+        </div>
+      </div>
+      <div class="be-card">
+        <div class="be-card-line" style="background:var(--c-aa1)"></div>
+        <div class="be-content">
+          <div class="be-lbl">旧报价 vs 新AA 方案一 · 持平年</div>
+          <div class="be-val" id="be-aa1" style="color:var(--c-aa1)">—</div>
+          <div class="be-hint">AA 方案一稳定期无费率优势</div>
+        </div>
+      </div>
+      <div class="be-card">
+        <div class="be-card-line" style="background:var(--c-aa2)"></div>
+        <div class="be-content">
+          <div class="be-lbl">旧报价 vs 新AA 方案二 · 持平年</div>
+          <div class="be-val" id="be-aa2" style="color:var(--c-aa2)">—</div>
+          <div class="be-hint">AA 方案二高费率拖累竞争力</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 图例 -->
+    <div class="chart-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--c-old)"></div>旧报价</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--c-aaa)"></div>新AAA</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa1)"></div>新AA 方案一</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa2)"></div>新AA 方案二</div>
+    </div>
+    <div class="chart-wrap"><canvas id="main-chart"></canvas></div>
+  </div>
+</div>
+
+<!-- ══════════ 04 场景分析 ══════════ -->
+<div class="section" id="sec04">
+  <div class="section-hd">
+    <span class="section-num">04</span>
+    <span class="section-title">场景分析 · 实时参数调整</span>
+  </div>
+  <div class="section-body">
+    <div class="scenario-sliders">
+      <div class="slider-group">
+        <div class="slider-lbl">年流水（$M / 项目）</div>
+        <div class="slider-hint">FPS/MOBA/沙盒 各自独立计算 · 步长 $10M</div>
+        <div class="slider-row">
+          <input type="range" class="slider" id="sl-rev" min="50" max="800" step="10" value="500" oninput="onScenario()">
+          <span class="slider-val" id="sl-rev-val">$500M</span>
+        </div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-lbl">资金折现率（NPV）</div>
+        <div class="slider-hint">超过 6% 时旧报价 NPV 反超</div>
+        <div class="slider-row">
+          <input type="range" class="slider" id="sl-rate" min="0" max="10" step="0.5" value="2" oninput="onScenario()">
+          <span class="slider-val" id="sl-rate-val">2.0%</span>
+        </div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-lbl">预充值总额（$M）</div>
+        <div class="slider-hint">2026 / 2027 年等额支付</div>
+        <div class="slider-row">
+          <input type="range" class="slider" id="sl-pb" min="20" max="80" step="5" value="50" oninput="onScenario()">
+          <span class="slider-val" id="sl-pb-val">$50M</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 四方案数值 -->
+    <div class="scenario-results">
+      <div class="scr-item">
+        <div class="scr-lbl">旧报价 11年</div>
+        <div class="scr-val" id="sc-old" style="color:var(--c-old)">—</div>
+        <div class="scr-sub" id="sc-old-npv">NPV —</div>
+      </div>
+      <div class="scr-item">
+        <div class="scr-lbl">新 AAA 11年</div>
+        <div class="scr-val" id="sc-aaa" style="color:var(--c-aaa)">—</div>
+        <div class="scr-sub" id="sc-aaa-npv">NPV —</div>
+      </div>
+      <div class="scr-item">
+        <div class="scr-lbl">新 AA 方案一 11年</div>
+        <div class="scr-val" id="sc-aa1" style="color:var(--c-aa1)">—</div>
+        <div class="scr-sub" id="sc-aa1-npv">—</div>
+      </div>
+      <div class="scr-item">
+        <div class="scr-lbl">新 AA 方案二 11年</div>
+        <div class="scr-val" id="sc-aa2" style="color:var(--c-aa2)">—</div>
+        <div class="scr-sub" id="sc-aa2-npv">—</div>
+      </div>
+    </div>
+
+    <!-- 临界值详情 + 建议 -->
+    <div class="be-detail-panel">
+      <div class="be-detail-title">当前参数下的临界流水</div>
+      <div class="be-detail-grid">
+        <div class="be-detail-item">
+          <div class="be-detail-lbl">旧报价 → 新 AAA 的切换临界点</div>
+          <div class="be-detail-val" id="be-old-aaa-val" style="color:var(--c-aaa)">—</div>
+          <div style="font-size:11px;color:var(--t-muted);margin-top:4px">超过此值，AAA 11年总费用更低</div>
+        </div>
+        <div class="be-detail-item">
+          <div class="be-detail-lbl">新 AAA vs 新 AA 方案一 的临界点</div>
+          <div class="be-detail-val" id="be-aaa-aa1-val" style="color:var(--c-aa1)">—</div>
+          <div style="font-size:11px;color:var(--t-muted);margin-top:4px">超过此值，AAA 比 AA方案一 更省</div>
+        </div>
+        <div class="be-detail-item">
+          <div class="be-detail-lbl">新 AAA vs 新 AA 方案二 的临界点</div>
+          <div class="be-detail-val" id="be-aaa-aa2-val" style="color:var(--c-aa2)">—</div>
+          <div style="font-size:11px;color:var(--t-muted);margin-top:4px">超过此值，AAA 比 AA方案二 更省</div>
+        </div>
+      </div>
+      <div class="scenario-rec" id="sc-rec" style="display:none;margin-top:12px"></div>
+    </div>
+
+    <!-- 场景折线图：不同流水下各方案11年总费用对比 -->
+    <div style="margin-top:20px">
+      <div style="font-size:18px;font-weight:700;color:var(--t-primary);margin-bottom:8px">不同年流水下四方案 11 年总费用对比</div>
+      <div style="font-size:13px;color:var(--t-muted);margin-bottom:12px">横轴为每项目年流水，纵轴为 11 年累计支出。折线交叉点代表方案转换的流水临界值，交叉点左侧选更低的方案，右侧同理。</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px">
+        <div class="leg-item"><div class="leg-dot" style="background:var(--c-old)"></div>旧报价</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--c-aaa)"></div>新 AAA</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa1)"></div>新 AA 方案一</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa2)"></div>新 AA 方案二</div>
+      </div>
+      <div style="position:relative;width:100%;aspect-ratio:2/1"><canvas id="scenario-rev-chart"></canvas></div>
+
+      <!-- 流水区间方案推荐文字，放在图下方 -->
+      <div id="sc-insight" style="margin-top:16px;padding:14px 18px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);font-size:13px;color:var(--t-secondary);line-height:1.85">正在计算...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 05 NPV 敏感性 ══════════ -->
+<div class="section" id="sec05">
+  <div class="section-hd">
+    <span class="section-num">05</span>
+    <span class="section-title">NPV 敏感性分析</span>
+  </div>
+  <div class="sens-grid" style="padding:16px 24px 20px;gap:16px">
+    <div class="sens-card">
+      <div class="sens-card-hd">
+        <div class="sens-card-title">折现率对净现值的影响</div>
+        <div class="sens-card-desc">折现率越低，前期预充值的时间成本越小，新 AAA 长期节省效益越突出。</div>
+      </div>
+      <div class="sens-conclusion aaa">
+        <strong>结论：</strong>折现率低于 6% 时新 AAA NPV 更优；超过 6% 旧报价反超。当前市场资金成本 2–5%，新 AAA 具有明显优势。
+      </div>
+      <div class="sens-table-wrap">
+        <table class="sens-table">
+          <thead><tr><th>折现率</th><th>旧报价</th><th>新 AAA</th><th>差额</th><th>结论</th></tr></thead>
+          <tbody id="npv-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sens-card">
+      <div class="sens-card-hd">
+        <div class="sens-card-title">流水规模敏感性</div>
+        <div class="sens-card-desc">新 AAA 的分成优势在高流水下线性放大，旧报价稳定期费率上限 0.75% 限制了边际节省空间。</div>
+      </div>
+      <div class="sens-conclusion save">
+        <strong>结论：</strong>年流水达 <strong>$250M / 项目</strong> 为临界点，超过后新 AAA 11 年总费用更低，差距随流水增长持续扩大。
+      </div>
+      <div class="sens-table-wrap">
+        <table class="sens-table">
+          <thead><tr><th>年流水 / 项目</th><th>旧报价 11年</th><th>新 AAA 11年</th><th>差额</th><th>结论</th></tr></thead>
+          <tbody id="rev-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 06 逐年明细 ══════════ -->
+<div class="section" id="sec06">
+  <div class="section-hd">
+    <span class="section-num">06</span>
+    <span class="section-title">逐年支出明细</span>
+    <div class="chart-tabs section-action">
+      <button class="ctab on" id="yt-cum-btn" onclick="switchYrTable('cum')">累计支出</button>
+      <button class="ctab" id="yt-ann-btn" onclick="switchYrTable('ann')">当年支出</button>
+    </div>
+  </div>
+  <div class="tbl-hdr">
+    <span class="tbl-hdr-title" id="yt-title">四方案累计支出（亿元）</span>
+    <span class="tbl-hdr-sub">蓝色 = 当年最低方案</span>
+  </div>
+  <div class="tbl-wrap">
+    <table><thead><tr id="yt-hdr"></tr></thead><tbody id="yt-body"></tbody></table>
+  </div>
+</div>
+
+<!-- ══════════ 附录：报价条款 ══════════ -->
+<div class="section" id="sec-app">
+  <div class="section-hd">
+    <span class="section-num">附录</span>
+    <span class="section-title">四方案报价条款对照</span>
+    <span style="font-family:var(--fm);font-size:11px;color:var(--t-muted)" class="section-action">费率结构 · License · 预充值要求</span>
+  </div>
+  <div class="rate-grid">
+    <!-- 旧报价 -->
+    <div class="rate-card c-old">
+      <div class="rate-accent"></div>
+      <div class="rate-hd">
+        <div class="rate-label">旧报价 · 现行协议</div>
+        <div class="rate-lic" style="color:var(--c-old)">$500 万</div>
+        <div class="rate-lic-sub">License / 项目 · 无预充值要求</div>
+      </div>
+      <div class="rate-tiers">
+        <div class="rate-tier"><span class="rate-tier-lbl">流水 ≤ $5亿</span><span class="rate-tier-val" style="color:var(--c-old)">1.25%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$5 – $10亿</span><span class="rate-tier-val" style="color:var(--c-old)">1.00%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$10亿 以上</span><span class="rate-tier-val" style="color:var(--c-old)">0.75%</span></div>
+        <div class="rate-tier" style="border-top:1px solid var(--border)"><span class="rate-tier-lbl">技术支持费</span><span class="rate-tier-val" style="color:var(--t-muted)">$25 万/年</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">UGC 分成</span><span class="rate-tier-val" style="color:var(--t-muted)">5%（可选）</span></div>
+      </div>
+    </div>
+    <!-- 新 AAA -->
+    <div class="rate-card c-aaa" style="border-color:var(--c-aaa-bd)">
+      <div class="rate-accent"></div>
+      <div class="rate-hd">
+        <div class="rate-label">新报价 AAA ✦ 推荐</div>
+        <div class="rate-lic" style="color:var(--c-aaa)">$1,500 万</div>
+        <div class="rate-lic-sub">License / 项目 · $50M 预充值（可抵扣）</div>
+      </div>
+      <div class="rate-tiers">
+        <div class="rate-tier"><span class="rate-tier-lbl">流水 ≤ $2.5亿</span><span class="rate-tier-val" style="color:var(--c-aaa)">1.00%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$2.5 – $5亿</span><span class="rate-tier-val" style="color:var(--c-aaa)">0.75%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$5 – $10亿</span><span class="rate-tier-val" style="color:var(--c-aaa)">0.50%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$10亿 以上</span><span class="rate-tier-val" style="color:var(--c-aaa);font-weight:700">0.25% ← 最低</span></div>
+        <div class="rate-tier" style="border-top:1px solid var(--border)"><span class="rate-tier-lbl">EPS 工程师座席</span><span class="rate-tier-val" style="color:var(--t-muted)">$1.5 万/项目</span></div>
+      </div>
+    </div>
+    <!-- 新 AA 方案一 -->
+    <div class="rate-card c-aa1">
+      <div class="rate-accent"></div>
+      <div class="rate-hd">
+        <div class="rate-label">新 AA 方案一</div>
+        <div class="rate-lic" style="color:var(--c-aa1)">$750 万</div>
+        <div class="rate-lic-sub">License / 项目 · $50M 预充值</div>
+      </div>
+      <div class="rate-tiers">
+        <div class="rate-tier"><span class="rate-tier-lbl">流水 ≤ $2.5亿</span><span class="rate-tier-val" style="color:var(--c-aa1)">1.50%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$2.5 – $5亿</span><span class="rate-tier-val" style="color:var(--c-aa1)">1.25%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$5 – $10亿</span><span class="rate-tier-val" style="color:var(--c-aa1)">1.00%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$10亿 以上</span><span class="rate-tier-val" style="color:var(--c-aa1)">0.75%</span></div>
+        <div class="rate-tier" style="border-top:1px solid var(--border)"><span class="rate-tier-lbl">稳定期 vs 旧报价</span><span class="rate-tier-val" style="color:var(--warn)">费率持平（均 0.75%）</span></div>
+      </div>
+    </div>
+    <!-- 新 AA 方案二 -->
+    <div class="rate-card c-aa2">
+      <div class="rate-accent"></div>
+      <div class="rate-hd">
+        <div class="rate-label">新 AA 方案二</div>
+        <div class="rate-lic" style="color:var(--c-aa2)">$500 万</div>
+        <div class="rate-lic-sub">License / 项目 · $50M 预充值</div>
+      </div>
+      <div class="rate-tiers">
+        <div class="rate-tier"><span class="rate-tier-lbl">流水 ≤ $2.5亿</span><span class="rate-tier-val" style="color:var(--c-aa2)">2.00%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$2.5 – $5亿</span><span class="rate-tier-val" style="color:var(--c-aa2)">1.75%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$5 – $15亿</span><span class="rate-tier-val" style="color:var(--c-aa2)">1.50% / 1.25%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$15 – $20亿</span><span class="rate-tier-val" style="color:var(--c-aa2)">1.00%</span></div>
+        <div class="rate-tier"><span class="rate-tier-lbl">$20亿 以上</span><span class="rate-tier-val" style="color:var(--c-aa2)">0.75%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-bar">
+    <strong>累计阶梯规则：</strong>单项目跨年累计叠加，不跨项目合并，不按自然年重置。同一项目历史累计流水越高，适用分成费率越低。KL / UC 已有现行授权，费用为零，不计入本次测算。FPS / MOBA / 沙盒三款游戏各自独立计算费率阶梯。
+  </div>
+
+  <!-- 直观对比：四方案一眼看懂 -->
+  <div style="padding:0 24px 24px">
+    <div style="font-size:20px;font-weight:700;color:var(--t-primary);margin-bottom:14px">四方案关键参数一览</div>
+    <div style="overflow-x:auto">
+    <table style="min-width:700px;border-collapse:separate;border-spacing:0 6px">
+      <thead>
+        <tr>
+          <th style="text-align:left;background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">方案</th>
+          <th style="background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">License 费<br><span style="font-weight:400">/项目</span></th>
+          <th style="background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">预充值</th>
+          <th style="background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">分成费率<br><span style="font-weight:400">（累计阶梯，最低→最高）</span></th>
+          <th style="background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">稳定期最低费率<br><span style="font-weight:400">（流水 ≥ $10亿后）</span></th>
+          <th style="background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">11年总费用<br><span style="font-weight:400">（$500M 流水）</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 旧报价 -->
+        <tr>
+          <td style="background:var(--c-old-bg);border:1px solid var(--c-old-bd);border-radius:var(--r-md) 0 0 var(--r-md);padding:14px 16px;font-weight:700;color:var(--c-old)">
+            旧报价<br><span style="font-size:11px;font-weight:400;color:var(--t-muted)">现行协议</span>
+          </td>
+          <td style="background:var(--c-old-bg);border-top:1px solid var(--c-old-bd);border-bottom:1px solid var(--c-old-bd);padding:14px 16px;font-family:var(--fm);text-align:center;font-size:var(--sz-md);font-weight:600;color:var(--c-old)">$500 万</td>
+          <td style="background:var(--c-old-bg);border-top:1px solid var(--c-old-bd);border-bottom:1px solid var(--c-old-bd);padding:14px 16px;text-align:center;font-size:var(--sz-sm);color:var(--t-muted)">无</td>
+          <td style="background:var(--c-old-bg);border-top:1px solid var(--c-old-bd);border-bottom:1px solid var(--c-old-bd);padding:14px 16px;font-size:var(--sz-sm);color:var(--t-secondary)">
+            <div class="rate-ladder">
+              <div class="rl-row"><span class="rl-range">≤$5亿</span><span class="rl-rate" style="color:var(--c-old)">1.25%</span></div>
+              <div class="rl-row"><span class="rl-range">$5 – $10亿</span><span class="rl-rate" style="color:var(--c-old)">1.00%</span></div>
+              <div class="rl-row rl-min"><span class="rl-range">$10亿 以上</span><span class="rl-rate" style="color:var(--c-old);font-weight:700">0.75% ← 最低</span></div>
+            </div>
+          </td>
+          <td style="background:var(--c-old-bg);border-top:1px solid var(--c-old-bd);border-bottom:1px solid var(--c-old-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-lg);font-weight:700;color:var(--c-old)">0.75%</td>
+          <td style="background:var(--c-old-bg);border:1px solid var(--c-old-bd);border-radius:0 var(--r-md) var(--r-md) 0;padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-md);font-weight:700;color:var(--c-old)" id="cmp-old-total">—</td>
+        </tr>
+        <!-- 新AAA -->
+        <tr>
+          <td style="background:var(--c-aaa-bg);border:1px solid var(--c-aaa-bd);border-radius:var(--r-md) 0 0 var(--r-md);padding:14px 16px;font-weight:700;color:var(--c-aaa)">
+            新报价 AAA<br><span style="font-size:11px;font-weight:400;color:var(--t-muted)">$15M License，低分成</span>
+          </td>
+          <td style="background:var(--c-aaa-bg);border-top:1px solid var(--c-aaa-bd);border-bottom:1px solid var(--c-aaa-bd);padding:14px 16px;font-family:var(--fm);text-align:center;font-size:var(--sz-md);font-weight:600;color:var(--c-aaa)">$1,500 万</td>
+          <td style="background:var(--c-aaa-bg);border-top:1px solid var(--c-aaa-bd);border-bottom:1px solid var(--c-aaa-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-sm);font-weight:600;color:var(--c-aaa)">$5,000 万<br><span style="font-size:10px;font-weight:400;color:var(--t-muted)">可抵扣</span></td>
+          <td style="background:var(--c-aaa-bg);border-top:1px solid var(--c-aaa-bd);border-bottom:1px solid var(--c-aaa-bd);padding:14px 16px;font-size:var(--sz-sm);color:var(--t-secondary)">
+            <div class="rate-ladder">
+              <div class="rl-row"><span class="rl-range">≤$2.5亿</span><span class="rl-rate" style="color:var(--c-aaa)">1.00%</span></div>
+              <div class="rl-row"><span class="rl-range">$2.5 – $5亿</span><span class="rl-rate" style="color:var(--c-aaa)">0.75%</span></div>
+              <div class="rl-row"><span class="rl-range">$5 – $10亿</span><span class="rl-rate" style="color:var(--c-aaa)">0.50%</span></div>
+              <div class="rl-row rl-min"><span class="rl-range">$10亿 以上</span><span class="rl-rate" style="color:var(--c-aaa);font-weight:700">0.25% ★ 最低</span></div>
+            </div>
+          </td>
+          <td style="background:var(--c-aaa-bg);border-top:1px solid var(--c-aaa-bd);border-bottom:1px solid var(--c-aaa-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-lg);font-weight:700;color:var(--c-aaa)">0.25%</td>
+          <td style="background:var(--c-aaa-bg);border:1px solid var(--c-aaa-bd);border-radius:0 var(--r-md) var(--r-md) 0;padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-md);font-weight:700;color:var(--c-aaa)" id="cmp-aaa-total">—</td>
+        </tr>
+        <!-- 新AA方案一 -->
+        <tr>
+          <td style="background:var(--c-aa1-bg);border:1px solid var(--c-aa1-bd);border-radius:var(--r-md) 0 0 var(--r-md);padding:14px 16px;font-weight:700;color:var(--c-aa1)">
+            新AA 方案一<br><span style="font-size:11px;font-weight:400;color:var(--t-muted)">$7.5M License，较低分成</span>
+          </td>
+          <td style="background:var(--c-aa1-bg);border-top:1px solid var(--c-aa1-bd);border-bottom:1px solid var(--c-aa1-bd);padding:14px 16px;font-family:var(--fm);text-align:center;font-size:var(--sz-md);font-weight:600;color:var(--c-aa1)">$750 万</td>
+          <td style="background:var(--c-aa1-bg);border-top:1px solid var(--c-aa1-bd);border-bottom:1px solid var(--c-aa1-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-sm);font-weight:600;color:var(--c-aa1)">$5,000 万<br><span style="font-size:10px;font-weight:400;color:var(--t-muted)">可抵扣</span></td>
+          <td style="background:var(--c-aa1-bg);border-top:1px solid var(--c-aa1-bd);border-bottom:1px solid var(--c-aa1-bd);padding:14px 16px;font-size:var(--sz-sm);color:var(--t-secondary)">
+            <div class="rate-ladder">
+              <div class="rl-row"><span class="rl-range">≤$2.5亿</span><span class="rl-rate" style="color:var(--c-aa1)">1.50%</span></div>
+              <div class="rl-row"><span class="rl-range">$2.5 – $5亿</span><span class="rl-rate" style="color:var(--c-aa1)">1.25%</span></div>
+              <div class="rl-row"><span class="rl-range">$5 – $10亿</span><span class="rl-rate" style="color:var(--c-aa1)">1.00%</span></div>
+              <div class="rl-row rl-min"><span class="rl-range">$10亿 以上</span><span class="rl-rate" style="color:var(--c-aa1);font-weight:700">0.75% ← 最低</span></div>
+            </div>
+          </td>
+          <td style="background:var(--c-aa1-bg);border-top:1px solid var(--c-aa1-bd);border-bottom:1px solid var(--c-aa1-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-lg);font-weight:700;color:var(--c-aa1)">0.75%<br><span style="font-size:11px;font-weight:400;color:var(--warn)">= 旧报价</span></td>
+          <td style="background:var(--c-aa1-bg);border:1px solid var(--c-aa1-bd);border-radius:0 var(--r-md) var(--r-md) 0;padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-md);font-weight:700;color:var(--c-aa1)" id="cmp-aa1-total">—</td>
+        </tr>
+        <!-- 新AA方案二 -->
+        <tr>
+          <td style="background:var(--c-aa2-bg);border:1px solid var(--c-aa2-bd);border-radius:var(--r-md) 0 0 var(--r-md);padding:14px 16px;font-weight:700;color:var(--c-aa2)">
+            新AA 方案二<br><span style="font-size:11px;font-weight:400;color:var(--t-muted)">$5M License，较高分成</span>
+          </td>
+          <td style="background:var(--c-aa2-bg);border-top:1px solid var(--c-aa2-bd);border-bottom:1px solid var(--c-aa2-bd);padding:14px 16px;font-family:var(--fm);text-align:center;font-size:var(--sz-md);font-weight:600;color:var(--c-aa2)">$500 万</td>
+          <td style="background:var(--c-aa2-bg);border-top:1px solid var(--c-aa2-bd);border-bottom:1px solid var(--c-aa2-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-sm);font-weight:600;color:var(--c-aa2)">$5,000 万<br><span style="font-size:10px;font-weight:400;color:var(--t-muted)">可抵扣</span></td>
+          <td style="background:var(--c-aa2-bg);border-top:1px solid var(--c-aa2-bd);border-bottom:1px solid var(--c-aa2-bd);padding:14px 16px;font-size:var(--sz-sm);color:var(--t-secondary)">
+            <div class="rate-ladder">
+              <div class="rl-row"><span class="rl-range">≤$2.5亿</span><span class="rl-rate" style="color:var(--c-aa2)">2.00%</span></div>
+              <div class="rl-row"><span class="rl-range">$2.5 – $5亿</span><span class="rl-rate" style="color:var(--c-aa2)">1.75%</span></div>
+              <div class="rl-row"><span class="rl-range">$5 – $10亿</span><span class="rl-rate" style="color:var(--c-aa2)">1.50% / 1.25%</span></div>
+              <div class="rl-row"><span class="rl-range">$15 – $20亿</span><span class="rl-rate" style="color:var(--c-aa2)">1.00%</span></div>
+              <div class="rl-row rl-min"><span class="rl-range">$20亿 以上</span><span class="rl-rate" style="color:var(--c-aa2);font-weight:700">0.75% ← 最低</span></div>
+            </div>
+          </td>
+          <td style="background:var(--c-aa2-bg);border-top:1px solid var(--c-aa2-bd);border-bottom:1px solid var(--c-aa2-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-lg);font-weight:700;color:var(--c-aa2)">0.75%<br><span style="font-size:11px;font-weight:400;color:var(--warn)">需流水 >$20亿</span></td>
+          <td style="background:var(--c-aa2-bg);border:1px solid var(--c-aa2-bd);border-radius:0 var(--r-md) var(--r-md) 0;padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-md);font-weight:700;color:var(--c-aa2)" id="cmp-aa2-total">—</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 附件：各年当年应付及预充值抵扣情况 ══════════ -->
+<div class="section" id="sec-appendix">
+  <div class="section-hd">
+    <span class="section-num">附件</span>
+    <span class="section-title">各方案各年当年应付及预充值抵扣情况</span>
+    <span style="font-family:var(--fm);font-size:var(--sz-sm);color:var(--t-muted)" class="section-action">单位：百万美元 (USD mm)</span>
+  </div>
+  <div class="section-body" style="padding-top:0">
+
+    <!-- 图例 -->
+    <div style="display:flex;align-items:center;gap:20px;padding:14px 0 10px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:7px;font-size:var(--sz-sm);color:var(--t-muted)">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--c-aaa)"></div>当年应付金额
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;font-size:var(--sz-sm);color:var(--t-muted)">
+        <div style="width:10px;height:10px;border-radius:50%;background:#fff;border:2px dashed var(--t-faint)"></div>预充值抵扣金额
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+    <table id="appendix-table" style="min-width:900px">
+      <thead>
+        <tr>
+          <th rowspan="2" style="vertical-align:middle;text-align:left;width:120px">年份</th>
+          <!-- 旧报价：无预充值抵扣，colspan=1 -->
+          <th colspan="1" style="text-align:center;color:var(--c-old);border-left:2px solid var(--c-old-bd);background:var(--c-old-bg)">
+            旧报价<br><span style="font-weight:400;font-size:11px">($5M License + 历史条款)</span>
+          </th>
+          <!-- 新AAA -->
+          <th colspan="2" style="text-align:center;color:var(--c-aaa);border-left:2px solid var(--c-aaa-bd);background:var(--c-aaa-bg)">
+            新AAA<br><span style="font-weight:400;font-size:11px">($15M License，低分成)</span>
+          </th>
+          <!-- 新AA方案一 -->
+          <th colspan="2" style="text-align:center;color:var(--c-aa1);border-left:2px solid var(--c-aa1-bd);background:var(--c-aa1-bg)">
+            新AA方案一<br><span style="font-weight:400;font-size:11px">($7.5M License，较低分成)</span>
+          </th>
+          <!-- 新AA方案二 -->
+          <th colspan="2" style="text-align:center;color:var(--c-aa2);border-left:2px solid var(--c-aa2-bd);background:var(--c-aa2-bg)">
+            新AA方案二<br><span style="font-weight:400;font-size:11px">($5M License，较高分成)</span>
+          </th>
+        </tr>
+        <tr id="appendix-sub-hdr">
+          <th class="th-old" style="border-left:2px solid var(--c-old-bd)">当年应付</th>
+          <th class="th-aaa" style="border-left:2px solid var(--c-aaa-bd)">当年应付</th>
+          <th class="th-aaa">可抵扣金额</th>
+          <th class="th-aa1" style="border-left:2px solid var(--c-aa1-bd)">当年应付</th>
+          <th class="th-aa1">可抵扣金额</th>
+          <th class="th-aa2" style="border-left:2px solid var(--c-aa2-bd)">当年应付</th>
+          <th class="th-aa2">可抵扣金额</th>
+        </tr>
+      </thead>
+      <tbody id="appendix-body"></tbody>
+    </table>
+    </div>
+
+    <div style="margin-top:10px;font-size:var(--sz-sm);color:var(--t-muted);padding:10px 4px;border-top:1px solid var(--border)">
+      ⓘ 说明：预充值 $50M 于 2026 年支付 $25M，2027 年支付 $25M；抵扣优先用于 License + 分成，直至用完为止；表中金额为 3 个项目合计。
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <div class="footer-text">
+    <strong>UE5 报价决策支持工具 V12</strong> · 内部测算，仅供参考<br>
+    汇率假设：USD/CNY = 7.0 · 增值税附加系数 = 1.13 · 测算周期：2026–2036（11年）<br>
+    三款游戏：FPS / MOBA / 沙盒 · 独立累计阶梯 · KL / UC 授权不计入
+  </div>
+  <div class="footer-tags">
+    <span class="footer-tag">基准 $500M 流水</span>
+    <span class="footer-tag">折现率 2%</span>
+    <span class="footer-tag">结论依赖流水达标</span>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════
+// 计算引擎
+// ══════════════════════════════════════════════
+const FX=7.0,TAX=1.13;
+function cumRS(cum,rev,T){let f=0,fr=cum,to=cum+rev,p=0;for(const[m,r]of T){if(to<=p)break;if(fr>=m){p=m;continue;}const lo=Math.max(fr,p),hi=Math.min(to,m);if(hi>lo)f+=(hi-lo)*r;p=m;}return f;}
+const T_OLD=[[500,.0125],[1000,.01],[Infinity,.0075]];
+const T_AAA=[[250,.01],[500,.0075],[1000,.005],[Infinity,.0025]];
+const T_AA1=[[250,.015],[500,.0125],[1000,.01],[Infinity,.0075]];
+const T_AA2=[[250,.02],[500,.0175],[1000,.015],[1500,.0125],[2000,.01],[Infinity,.0075]];
+const FRAC={1:.75,2:.5,3:.5,4:.25};
+const PROJS_DEF=[['FPS',2029,1],['MOBA',2029,2],['沙盒',2029,4]];
+const YEARS=Array.from({length:11},(_,i)=>2026+i);
+const N=YEARS.length;
+
+function calcAll(revM=500,pbTotal=50,discRate=0.02){
+  function calc(mode,lic,tiers){
+    let pb=mode==='old'?null:0,cum=0;
+    const cr={FPS:0,MOBA:0,'沙盒':0};
+    const rows=[],pbRows=[];
+    for(const yr of YEARS){
+      let cash=0,pb_in=0,pb_used=0;
+      if(mode!=='old'&&yr<=2027){const amt=pbTotal/2;cash+=amt;pb+=amt;pb_in=amt;}
+      for(const[n,pyr,q]of PROJS_DEF){
+        const rev=revM*(yr===pyr?FRAC[q]:1);
+        if(yr<pyr)continue;
+        const cp=cr[n];
+        if(mode==='old'){if(yr===pyr)cash+=5;if(yr>pyr)cash+=.25;cash+=cumRS(cp,rev,T_OLD);}
+        else{if(yr===pyr){const t=lic+.015,fr=Math.min(pb,t);pb-=fr;pb_used+=fr;cash+=t-fr;}
+             const rs=cumRS(cp,rev,tiers),rf=Math.min(pb,rs);pb-=rf;pb_used+=rf;cash+=rs-rf;}
+        cr[n]+=rev;
+      }
+      cum+=cash;
+      rows.push({yr,cash:+cash.toFixed(4),cum:+cum.toFixed(4)});
+      pbRows.push({yr,pb_in,pb_used:+pb_used.toFixed(4),pb_end:+(mode==='old'?0:pb).toFixed(4)});
+    }
+    const npvArr=rows.map((r,i)=>+(r.cash/Math.pow(1+discRate,i)).toFixed(4));
+    let s=0;const npvCum=npvArr.map(v=>+(s+=v).toFixed(4));
+    return{rows,pbRows,npvArr,npvCum};
+  }
+  const dO=calc('old',0,T_OLD),dA=calc('aaa',15,T_AAA);
+  const d1=calc('aa1',7.5,T_AA1),d2=calc('aa2',5,T_AA2);
+  const findBE=(a,b)=>YEARS.find((_,i)=>b[i].cum<=a[i].cum)||null;
+  return{dO,dA,d1,d2,
+    be_aaa:findBE(dO.rows,dA.rows),
+    be_aa1:findBE(dO.rows,d1.rows),
+    be_aa2:findBE(dO.rows,d2.rows)};
+}
+
+const yiRmb=m=>'¥'+(m*FX*TAX/100).toFixed(2)+'亿';
+const yiRmbShort=m=>'¥'+(m*FX*TAX/100).toFixed(1)+'亿';
+const usdStr=m=>'$'+m.toFixed(2)+'M';
+
+// ══ 逐年明细：累计模式中排除预充值注入，但保留预充值"抵扣"的真实费用
+// 
+// 说明：
+//   cash = 实际现金支出（预充值年含注入，其余年含分成/license现金部分）
+//   pb_used = 当年用预充值余额抵扣的分成/license（未实际付现，但是真实发生的成本）
+//   pb_in  = 当年预充值注入（纯资金预付，不是运营费用）
+//
+//   cashOp = cash - pb_in + pb_used
+//          = 当年实际运营费用（去掉注入，加回抵扣部分，还原真实成本）
+//
+// 例：2029年AA方案 cash≈0（license被预充值全抵），pb_used=7.515，pb_in=0
+//   → cashOp = 0 - 0 + 7.515 = 7.515M（正确显示license成本）
+function calcOpRows(modeRows, pbRows) {
+  let cumOp = 0;
+  return modeRows.map((r, i) => {
+    const cashOp = r.cash - pbRows[i].pb_in + pbRows[i].pb_used;
+    cumOp += cashOp;
+    return { yr: r.yr, cash: r.cash, cashOp: +cashOp.toFixed(4), cumOp: +cumOp.toFixed(4) };
+  });
+}
+
+let mainChart=null,chartView='cum',ytView='cum',G=null;
+
+function initCharts(d){
+  const toY=m=>+(m*FX*TAX/100).toFixed(4);
+  // 胶囊标签helper：标签浮于图区上方，箭头指向虚线顶端
+  function drawFlagLabel(ctx,x,a,label,fillColor,lineAlpha){
+    lineAlpha=lineAlpha||0.30;
+    ctx.save();
+    ctx.font="600 10px 'Inter','PingFang SC',sans-serif";
+    const tw=ctx.measureText(label).width;
+    const ph=17,pw=tw+14,pr=4;
+    const px=x-pw/2, py=a.top-ph-10;
+    ctx.fillStyle=fillColor;ctx.globalAlpha=1;
+    ctx.beginPath();
+    if(ctx.roundRect){ctx.roundRect(px,py,pw,ph,pr);}else{ctx.rect(px,py,pw,ph);}
+    ctx.fill();
+    ctx.beginPath();ctx.moveTo(x-5,py+ph);ctx.lineTo(x+5,py+ph);ctx.lineTo(x,py+ph+6);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(label,x,py+ph/2);
+    ctx.globalAlpha=lineAlpha;
+    ctx.setLineDash([5,4]);ctx.strokeStyle=fillColor;ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(x,a.top);ctx.lineTo(x,a.bottom);ctx.stroke();
+    ctx.restore();
+  }
+  const launchPlugin={id:'lp',afterDraw(c){
+    const{ctx,chartArea:a,scales:s}=c;
+    // 上线标记（刻度点）
+    const li=YEARS.indexOf(2029);
+    if(li>=0) drawFlagLabel(ctx,s.x.getPixelForTick(li),a,'上线','rgba(180,83,9,.92)');
+    // 持平标记：线性插值找精确交叉 x 坐标
+    if(chartView==='cum'||chartView==='annNet'){
+      const curOd=od, curAd=ad; // 当前渲染数据（累计支出 / 累计运营成本）
+      for(let i=1;i<curOd.length;i++){
+        const diff1=curOd[i-1]-curAd[i-1], diff2=curOd[i]-curAd[i];
+        if(diff1>0&&diff2<=0||diff1<0&&diff2>=0){ // 发生交叉
+          const t=diff1/(diff1-diff2); // 插值比例 0~1
+          const x1=s.x.getPixelForTick(i-1), x2=s.x.getPixelForTick(i);
+          const crossX=x1+t*(x2-x1);
+          drawFlagLabel(ctx,crossX,a,'持平','rgba(28,84,153,.92)');
+          break;
+        }
+      }
+    }
+  }};
+  if(mainChart)mainChart.destroy();
+  let od,ad,a1d,a2d;
+  const opO=calcOpRows(d.dO.rows,d.dO.pbRows);
+  const opA=calcOpRows(d.dA.rows,d.dA.pbRows);
+  const op1=calcOpRows(d.d1.rows,d.d1.pbRows);
+  const op2=calcOpRows(d.d2.rows,d.d2.pbRows);
+  if(chartView==='cum'){
+    // 累计实际支出（含预充值注入，反映真实现金流出）
+    od=d.dO.rows.map(r=>toY(r.cum));ad=d.dA.rows.map(r=>toY(r.cum));
+    a1d=d.d1.rows.map(r=>toY(r.cum));a2d=d.d2.rows.map(r=>toY(r.cum));
+  }else if(chartView==='ann'){
+    // 当年实际支出
+    od=d.dO.rows.map(r=>toY(r.cash));ad=d.dA.rows.map(r=>toY(r.cash));
+    a1d=d.d1.rows.map(r=>toY(r.cash));a2d=d.d2.rows.map(r=>toY(r.cash));
+  }else{
+    // 累计运营成本：去掉预充值注入，还原真实运营费用积累
+    od=opO.map(r=>toY(r.cumOp));ad=opA.map(r=>toY(r.cumOp));
+    a1d=op1.map(r=>toY(r.cumOp));a2d=op2.map(r=>toY(r.cumOp));
+  }
+  // 全部使用折线图
+  mainChart=new Chart(document.getElementById('main-chart').getContext('2d'),{
+    type:'line',
+    plugins:[launchPlugin],
+    data:{labels:YEARS.map(String),datasets:[
+      {label:'旧报价',data:od,borderColor:'#8C7355',backgroundColor:'rgba(140,115,85,.08)',borderWidth:2.5,fill:true,tension:.35,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:'#8C7355',pointBorderColor:'#fff',pointBorderWidth:2},
+      {label:'新AAA',data:ad,borderColor:'#1C5499',backgroundColor:'rgba(28,84,153,.08)',borderWidth:2.5,fill:true,tension:.35,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:'#1C5499',pointBorderColor:'#fff',pointBorderWidth:2},
+      {label:'新AA方案一',data:a1d,borderColor:'#5B4B8A',backgroundColor:'rgba(91,75,138,.06)',borderWidth:2,borderDash:[6,4],fill:true,tension:.35,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:'#5B4B8A',pointBorderColor:'#fff',pointBorderWidth:2},
+      {label:'新AA方案二',data:a2d,borderColor:'#1B6B6B',backgroundColor:'rgba(27,107,107,.06)',borderWidth:2,borderDash:[2,4],fill:true,tension:.35,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:'#1B6B6B',pointBorderColor:'#fff',pointBorderWidth:2},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      animation:{duration:300,easing:'easeOutCubic'},
+      layout:{padding:{top:32}},
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'rgba(17,24,39,.94)',titleColor:'rgba(255,255,255,.5)',bodyColor:'rgba(255,255,255,.86)',padding:12,cornerRadius:8,borderColor:'rgba(255,255,255,.08)',borderWidth:1,titleFont:{family:"'Inter','PingFang SC',sans-serif",size:10},bodyFont:{family:"'Inter','PingFang SC',sans-serif",size:11},
+          callbacks:{title:i=>`${i[0].label} 年`,label:c=>{const s=['●','■','◆','▲'][c.datasetIndex];return ` ${s} ${c.dataset.label}  ¥${c.parsed.y.toFixed(2)}亿`;}}},
+      },
+      scales:{
+        x:{grid:{color:'rgba(17,24,39,.04)'},border:{display:false},ticks:{font:{family:"'Inter','PingFang SC',sans-serif",size:11},color:'#6B7280',padding:5}},
+        y:{grid:{color:'rgba(17,24,39,.04)'},border:{display:false},ticks:{font:{family:"'Inter','PingFang SC',sans-serif",size:11},color:'#6B7280',callback:v=>'¥'+v.toFixed(2)+'亿',maxTicksLimit:12},beginAtZero:true}
+      }
+    }
+  });
+}
+
+function switchChart(v){
+  chartView=v;
+  ['cum','ann','annNet'].forEach(k=>{const el=document.getElementById('csw-'+k);if(el)el.className='ctab'+(k===v?' on':'');});
+  if(G)initCharts(G);
+}
+
+function renderCards(d){
+  const last=a=>a.rows[N-1].cum;
+  const lO=last(d.dO),lA=last(d.dA),l1=last(d.d1),l2=last(d.d2);
+  const npvO=d.dO.npvCum[N-1],npvA=d.dA.npvCum[N-1],npv1=d.d1.npvCum[N-1],npv2=d.d2.npvCum[N-1];
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('v-old-rmb',yiRmb(lO));set('v-old-usd',usdStr(lO));
+  set('v-old-npv',yiRmb(npvO));set('v-old-avg',yiRmbShort(lO/N)+'/年');
+  set('v-aaa-rmb',yiRmb(lA));set('v-aaa-usd',usdStr(lA));
+  set('v-aaa-npv',yiRmb(npvA));set('v-aaa-avg',yiRmbShort(lA/N)+'/年');
+  set('v-aa1-rmb',yiRmb(l1));set('v-aa1-usd',usdStr(l1));
+  set('v-aa1-npv',yiRmb(npv1));set('v-aa1-avg',yiRmbShort(l1/N)+'/年');
+  set('v-aa2-rmb',yiRmb(l2));set('v-aa2-usd',usdStr(l2));
+  set('v-aa2-npv',yiRmb(npv2));set('v-aa2-avg',yiRmbShort(l2/N)+'/年');
+  const s2=(id,v,c)=>{const el=document.getElementById(id);if(el){el.textContent=v;el.style.color=c;}};
+  s2('be-aaa',d.be_aaa?`${d.be_aaa}年（上线后第${d.be_aaa-2029+1}年）`:'11年内未持平',d.be_aaa?'var(--c-aaa)':'var(--t-muted)');
+  s2('be-aa1',d.be_aa1?`${d.be_aa1}年`:'11年内未持平',d.be_aa1?'var(--c-aa1)':'var(--risk)');
+  s2('be-aa2',d.be_aa2?`${d.be_aa2}年`:'11年内未持平',d.be_aa2?'var(--c-aa2)':'var(--risk)');
+  set('db-be',d.be_aaa?`${d.be_aaa}年（上线后第${d.be_aaa-2029+1}年）`:'11年内未持平');
+}
+
+let ytData=null;
+function renderYrTable(d){
+  ytData=d;
+  const ann=ytView==='ann';
+  const hdrEl=document.getElementById('yt-hdr');
+  const bodyEl=document.getElementById('yt-body');
+  // 累计模式：不含预充值
+  document.getElementById('yt-title').textContent=ann?'四方案当年实际支出（亿元）':'四方案累计支出（亿元）';
+
+  hdrEl.innerHTML=`<th>年份</th><th class="th-old">旧报价</th><th class="th-aaa">新 AAA</th><th class="th-aa1">新AA方案一</th><th class="th-aa2">新AA方案二</th><th>最优</th>`;
+
+  const toY=m=>+(m*FX*TAX/100).toFixed(2);
+
+  // 计算去除预充值的累计
+  const opO=calcOpRows(d.dO.rows,d.dO.pbRows);
+  const opA=calcOpRows(d.dA.rows,d.dA.pbRows);
+  const op1=calcOpRows(d.d1.rows,d.d1.pbRows);
+  const op2=calcOpRows(d.d2.rows,d.d2.pbRows);
+
+  let html='';
+  YEARS.forEach((yr,i)=>{
+    let vO,vA,v1,v2;
+    if(ann){
+      // 当年：展示实际现金支出
+      vO=toY(d.dO.rows[i].cash);
+      vA=toY(d.dA.rows[i].cash);
+      v1=toY(d.d1.rows[i].cash);
+      v2=toY(d.d2.rows[i].cash);
+    }else{
+      // 累计支出：含预充值注入，反映真实资金流出
+      vO=toY(d.dO.rows[i].cum);
+      vA=toY(d.dA.rows[i].cum);
+      v1=toY(d.d1.rows[i].cum);
+      v2=toY(d.d2.rows[i].cum);
+    }
+    const isLaunch=yr===2029,isBE=yr===d.be_aaa;
+    const cls=isLaunch?'tr-launch':isBE?'tr-be':'';
+    const vals=[vO,vA,v1,v2];
+    const minV=Math.min(...vals.filter(v=>v>0)||[Infinity]),bestIdx=vals.indexOf(minV);
+    const bestNames=['旧报价','新 AAA','AA方案一','AA方案二'];
+    const bestColors=['var(--c-old)','var(--c-aaa)','var(--c-aa1)','var(--c-aa2)'];
+    const td=(v,idx)=>`<td${idx===bestIdx&&v>0?' class="cell-best"':''}>${v>0?v.toFixed(2):'—'}</td>`;
+    const yrTag=isLaunch?'<span class="yr-chip launch">上线</span>':isBE?'<span class="yr-chip be">持平</span>':'';
+    html+=`<tr class="${cls}"><td>${yr}${yrTag}</td>${td(vO,0)}${td(vA,1)}${td(v1,2)}${td(v2,3)}<td style="color:${bestColors[bestIdx]};font-weight:700">${bestNames[bestIdx]}</td></tr>`;
+  });
+  // 合计行：累计总值
+  const tO=toY(d.dO.rows[N-1].cum),tA=toY(d.dA.rows[N-1].cum),t1=toY(d.d1.rows[N-1].cum),t2=toY(d.d2.rows[N-1].cum);
+  const tOann=toY(d.dO.rows[N-1].cum),tAann=toY(d.dA.rows[N-1].cum),t1ann=toY(d.d1.rows[N-1].cum),t2ann=toY(d.d2.rows[N-1].cum);
+  const tvs=ann?[tOann,tAann,t1ann,t2ann]:[tO,tA,t1,t2];
+  const tminIdx=tvs.indexOf(Math.min(...tvs));
+  html+=`<tr class="tr-total"><td>11年合计</td>${tvs.map((v,i)=>`<td${i===tminIdx?' class="cell-best"':''}>${v.toFixed(2)}</td>`).join('')}<td></td></tr>`;
+  bodyEl.innerHTML=html;
+}
+
+function switchYrTable(v){
+  ytView=v;
+  document.getElementById('yt-cum-btn').className='ctab'+(v==='cum'?' on':'');
+  document.getElementById('yt-ann-btn').className='ctab'+(v==='ann'?' on':'');
+  if(ytData)renderYrTable(ytData);
+}
+
+function renderPrepaid(d){
+  let html='';
+  YEARS.forEach((yr,i)=>{
+    const isPrepay=yr<=2027,isLaunch=yr===2029;
+    const cls=isLaunch?'tr-launch':isPrepay?'tr-prepay':'';
+    const aR=d.dA.pbRows[i],bR=d.d1.pbRows[i],cR=d.d2.pbRows[i];
+    const balCls=v=>v<0.001?'pb-zero':v<10?'pb-low':'pb-ok';
+    const fmt=(r,f)=>`${r[f]>0.001?'$'+r[f].toFixed(3)+'M':'—'}`;
+    const yrChip=isLaunch?'<span class="yr-chip launch">上线年</span>':isPrepay?'<span class="yr-chip prepay">预充值</span>':'';
+    html+=`<tr class="${cls}">
+      <td>${yr}${yrChip}</td>
+      <td class="${aR.pb_in>0?'pb-in':''}">${aR.pb_in>0?'+$'+aR.pb_in.toFixed(1)+'M':'—'}</td>
+      <td class="${aR.pb_used>0.001?'pb-ok':''}">${fmt(aR,'pb_used')}</td>
+      <td class="${balCls(aR.pb_end)}">${aR.pb_end<0.001?'$0 耗尽':'$'+aR.pb_end.toFixed(3)+'M'}</td>
+      <td class="${bR.pb_used>0.001?'pb-ok':''}">${fmt(bR,'pb_used')}</td>
+      <td class="${balCls(bR.pb_end)}">${bR.pb_end<0.001?'$0 耗尽':'$'+bR.pb_end.toFixed(3)+'M'}</td>
+      <td class="${cR.pb_used>0.001?'pb-ok':''}">${fmt(cR,'pb_used')}</td>
+      <td class="${balCls(cR.pb_end)}">${cR.pb_end<0.001?'$0 耗尽':'$'+cR.pb_end.toFixed(3)+'M'}</td>
+    </tr>`;
+  });
+  document.getElementById('pt-body').innerHTML=html;
+}
+
+function renderSensitivity(){
+  const rates=[0,.02,.03,.05,.06,.08];
+  const rLbls=['0%（名义）','2%','3%','5%','6%','8%'];
+  let html='';
+  rates.forEach((r,i)=>{
+    const d=calcAll(500,50,r);
+    const lO=d.dO.rows[N-1].cum,lA=d.dA.rows[N-1].cum;
+    const ov=r===0?lO:d.dO.npvCum[N-1],av=r===0?lA:d.dA.npvCum[N-1];
+    const dv=+(ov-av).toFixed(2);
+    const isCrit=r===0.06;
+    html+=`<tr class="${isCrit?'hl-row':''}"><td>${rLbls[i]}${isCrit?'<span class="tag" style="margin-left:7px;background:var(--warn-bg);color:var(--warn);border:1px solid rgba(180,83,9,.18)">临界点</span>':''}</td><td style="color:var(--c-old)">${yiRmb(ov)}</td><td style="color:var(--c-aaa)">${yiRmb(av)}</td><td class="${dv>0?'diff-pos':'diff-neg'}">${dv>0?'+':''} ${yiRmbShort(Math.abs(dv))}</td><td><span class="tag ${dv>0?'best':'warn'}">${dv>0?'新AAA 更优':'旧报价更优'}</span></td></tr>`;
+  });
+  document.getElementById('npv-tbody').innerHTML=html;
+  const revs=[100,150,200,250,300,400,500,700];
+  let html2='';
+  revs.forEach(rev=>{
+    const d=calcAll(rev,50,0.02);
+    const lO=d.dO.rows[N-1].cum,lA=d.dA.rows[N-1].cum,dv=+(lO-lA).toFixed(2);
+    const isCrit=rev===250;
+    html2+=`<tr class="${isCrit?'hl-row':''}"><td>$${rev}M/项目${isCrit?'<span class="tag" style="margin-left:5px;background:var(--warn-bg);color:var(--warn);border:1px solid rgba(180,83,9,.18)">临界点</span>':''}</td><td style="color:var(--c-old)">${yiRmb(lO)}</td><td style="color:var(--c-aaa)">${yiRmb(lA)}</td><td class="${dv>0?'diff-pos':'diff-neg'}">${dv>0?'+':''} ${yiRmbShort(Math.abs(dv))}</td><td><span class="tag ${dv>0?'best':'warn'}">${dv>0?'新AAA 更优':'旧报价更优'}</span></td></tr>`;
+  });
+  document.getElementById('rev-tbody').innerHTML=html2;
+}
+
+function findBEBisect(modeA,modeB,pbT,dRate){
+  let lo=10,hi=1500,mid=0;
+  for(let i=0;i<40;i++){
+    mid=(lo+hi)/2;
+    const da=calcAll(mid,pbT,dRate);
+    const cA=modeA==='old'?da.dO.rows[N-1].cum:modeA==='aaa'?da.dA.rows[N-1].cum:modeA==='aa1'?da.d1.rows[N-1].cum:da.d2.rows[N-1].cum;
+    const cB=modeB==='old'?da.dO.rows[N-1].cum:modeB==='aaa'?da.dA.rows[N-1].cum:modeB==='aa1'?da.d1.rows[N-1].cum:da.d2.rows[N-1].cum;
+    // cA<cB 说明当前rev下modeA更便宜，临界点在更高rev处，lo上移
+    if(cA<cB)lo=mid;else hi=mid;
+  }
+  return mid;
+}
+
+function onScenario(){
+  const rev=+document.getElementById('sl-rev').value;
+  const rate=+document.getElementById('sl-rate').value/100;
+  const pb=+document.getElementById('sl-pb').value;
+  document.getElementById('sl-rev-val').textContent='$'+rev+'M';
+  document.getElementById('sl-rate-val').textContent=(rate*100).toFixed(1)+'%';
+  document.getElementById('sl-pb-val').textContent='$'+pb+'M';
+  ['sl-rev','sl-rate','sl-pb'].forEach(id=>{
+    const el=document.getElementById(id);
+    const pct=((el.value-el.min)/(el.max-el.min)*100).toFixed(1);
+    el.style.setProperty('--pct',pct+'%');
+  });
+  const d=calcAll(rev,pb,rate);
+  const lO=d.dO.rows[N-1].cum,lA=d.dA.rows[N-1].cum,l1=d.d1.rows[N-1].cum,l2=d.d2.rows[N-1].cum;
+  const npvO=d.dO.npvCum[N-1],npvA=d.dA.npvCum[N-1];
+  document.getElementById('sc-old').textContent=yiRmb(lO);
+  document.getElementById('sc-old-npv').textContent='NPV '+yiRmb(npvO);
+  document.getElementById('sc-aaa').textContent=yiRmb(lA);
+  document.getElementById('sc-aaa-npv').textContent='NPV '+yiRmb(npvA);
+  document.getElementById('sc-aa1').textContent=yiRmb(l1);
+  document.getElementById('sc-aa2').textContent=yiRmb(l2);
+
+  // 求三组临界值
+  const be_old_aaa=findBEBisect('old','aaa',pb,rate);
+  const be_aaa_aa1=findBEBisect('aa1','aaa',pb,rate);
+  const be_aaa_aa2=findBEBisect('aa2','aaa',pb,rate);
+  const fmtM=v=>'$'+Math.round(v)+'M';
+  const fmtM1=v=>'$'+(v).toFixed(0)+'M';
+
+  // 显示临界值
+  const setEl=(id,v,c)=>{const el=document.getElementById(id);if(el){el.textContent=v;el.style.color=c||'inherit'}};
+  setEl('be-old-aaa-val',fmtM(be_old_aaa)+'/项目','var(--c-aaa)');
+  setEl('be-aaa-aa1-val',fmtM(be_aaa_aa1)+'/项目','var(--c-aa1)');
+  setEl('be-aaa-aa2-val',fmtM(be_aaa_aa2)+'/项目','var(--c-aa2)');
+
+  // 简明推荐文字：按流水区间分段说明
+  const schemeRec=[];
+  // 区间1：低于所有临界点
+  const minThresh=Math.min(be_old_aaa,be_aaa_aa1,be_aaa_aa2);
+  // 按临界点排序，确定各区间推荐
+  const thresh=[
+    {v:be_aaa_aa2, label:'AA方案二→AAA', from:'新AA方案二', to:'新AAA'},
+    {v:be_aaa_aa1, label:'AA方案一→AAA', from:'新AA方案一', to:'新AAA'},
+    {v:be_old_aaa, label:'旧报价→AAA',   from:'旧报价',   to:'新AAA'},
+  ].sort((a,b)=>a.v-b.v);
+
+  // 构建分段推荐说明
+  const segLines=[];
+  segLines.push(`根据当前折现率 <strong>${(rate*100).toFixed(1)}%</strong>、预充值 <strong>$${pb}M</strong>，不同年流水水平下的方案选择建议：`);
+  segLines.push(`<ul style="margin:10px 0 0 16px;line-height:2">`);
+  segLines.push(`<li>年流水 <strong>&lt; ${fmtM(thresh[0].v)}/项目</strong> 时：<span style="color:var(--c-aa2);font-weight:600">新AA方案二</span> 11年综合成本最低（License费最低，抵消了较高分成）</li>`);
+  if(thresh[0].v<thresh[1].v-5){
+    segLines.push(`<li>年流水 <strong>${fmtM(thresh[0].v)} – ${fmtM(thresh[1].v)}/项目</strong> 时：<span style="color:var(--c-aa1);font-weight:600">新AA方案一</span> 或 <span style="color:var(--c-aa2);font-weight:600">新AA方案二</span> 各有优势，差距较小</li>`);
+  }
+  segLines.push(`<li>年流水 <strong>${fmtM(thresh[1].v)} – ${fmtM(thresh[2].v)}/项目</strong> 时：<span style="color:var(--c-aaa);font-weight:600">新AAA</span> 已优于两套AA方案，但整体仍不及旧报价</li>`);
+  segLines.push(`<li>年流水 <strong>&gt; ${fmtM(thresh[2].v)}/项目</strong> 时：<span style="color:var(--c-aaa);font-weight:600">新AAA</span> 11年综合成本最低${lA<lO?'，比旧报价累计少付 <strong style="color:var(--save)">'+yiRmbShort(lO-lA)+'</strong>':''}</li>`);
+  segLines.push(`</ul>`);
+  if(rate>0.05) segLines.push(`<div style="margin-top:8px;color:var(--warn)">⚠ 当前折现率偏高（${(rate*100).toFixed(1)}%），预充值的时间成本增加，各临界点会比折现率 2% 时略高。</div>`);
+  // 当前流水高亮
+  segLines.push(`<div style="margin-top:10px;padding:8px 12px;background:var(--c-aaa-bg);border-left:3px solid var(--c-aaa);border-radius:0 var(--r-sm) var(--r-sm) 0;font-weight:600;color:var(--t-primary)">当前滑块流水 $${rev}M — ${rev>be_old_aaa?'<span style="color:var(--c-aaa)">新AAA 综合成本最低</span>':rev>thresh[1].v?'<span style="color:var(--c-aaa)">新AAA 已优于两套AA方案，但低于旧报价临界</span>':rev>thresh[0].v?'<span style="color:var(--c-aa1)">AA方案一/旧报价较优</span>':'<span style="color:var(--c-aa2)">新AA方案二较优</span>'}</div>`);
+
+  const insightEl=document.getElementById('sc-insight');
+  if(insightEl)insightEl.innerHTML=segLines.join('');
+
+  // 推荐框（简化）
+  const allVals=[lO,lA,l1,l2];
+  const minV=Math.min(...allVals);
+  const bestIdx=allVals.indexOf(minV);
+  const names=['旧报价','新AAA','新AA 方案一','新AA 方案二'];
+  const recEl=document.getElementById('sc-rec');
+  if(recEl){
+    const savings=lO-[lO,lA,l1,l2][bestIdx];
+    let recText='';
+    if(bestIdx===1){
+      recText=`✅ <strong>当前流水 $${rev}M 下，新 AAA 11年总费用最低</strong>，比旧报价累计少付 ${yiRmbShort(savings)}。`;
+    }else if(bestIdx===0){
+      recText=`📌 <strong>当前流水 $${rev}M 下，旧报价仍更省</strong>（比新 AAA 少 ${yiRmbShort(lA-lO)}）。流水需超过 ${fmtM(be_old_aaa)} 后，AAA 方案才更划算。`;
+    }else{
+      recText=`📌 <strong>当前参数下 ${names[bestIdx]} 成本最低</strong>，比旧报价少付 ${yiRmbShort(savings)}。`;
+    }
+    recEl.innerHTML=recText;
+    recEl.style.display='block';
+  }
+}
+
+// ══ 初始化
+G=calcAll(500,50,0.02);
+renderCards(G);
+initCharts(G);
+renderYrTable(G);
+// renderPrepaid已移除（07预充值section已删除）
+renderSensitivity();
+onScenario();
+
+// ══ 场景折线图：不同流水下11年总费用
+(function initScenarioRevChart(){
+  const revPoints=[50,100,150,200,250,300,350,400,500,600,700,800];
+  const dO=[],dA=[],d1=[],d2=[];
+  revPoints.forEach(rev=>{
+    const d=calcAll(rev,50,0.02);
+    const toY=m=>+(m*FX*TAX/100).toFixed(3);
+    dO.push(toY(d.dO.rows[N-1].cum));
+    dA.push(toY(d.dA.rows[N-1].cum));
+    d1.push(toY(d.d1.rows[N-1].cum));
+    d2.push(toY(d.d2.rows[N-1].cum));
+  });
+  // 胶囊标注helper
+  function drawRevFlag(ctx,x,a,label,fillColor){
+    ctx.save();
+    ctx.font="600 10px 'Inter','PingFang SC',sans-serif";
+    const tw=ctx.measureText(label).width;
+    const ph=17,pw=tw+14,pr=4;
+    const px=x-pw/2, py=a.top-ph-10;
+    ctx.fillStyle=fillColor;ctx.globalAlpha=1;
+    ctx.beginPath();
+    if(ctx.roundRect){ctx.roundRect(px,py,pw,ph,pr);}else{ctx.rect(px,py,pw,ph);}
+    ctx.fill();
+    ctx.beginPath();ctx.moveTo(x-5,py+ph);ctx.lineTo(x+5,py+ph);ctx.lineTo(x,py+ph+6);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(label,x,py+ph/2);
+    ctx.globalAlpha=0.30;ctx.setLineDash([5,4]);ctx.strokeStyle=fillColor;ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(x,a.top);ctx.lineTo(x,a.bottom);ctx.stroke();
+    ctx.restore();
+  }
+  // 动态计算旧报价=新AAA交叉点
+  const annotPlugin={id:'rev-annot',afterDraw(c){
+    const{ctx,chartArea:a,scales:s}=c;
+    let crossX=null,crossLabel='';
+    for(let i=1;i<dO.length;i++){
+      const diff1=dO[i-1]-dA[i-1], diff2=dO[i]-dA[i];
+      if(diff1*diff2<0){
+        const t=diff1/(diff1-diff2);
+        const x1=s.x.getPixelForTick(i-1), x2=s.x.getPixelForTick(i);
+        crossX=x1+t*(x2-x1);
+        const crossRev=revPoints[i-1]+t*(revPoints[i]-revPoints[i-1]);
+        crossLabel='旧价=AAA  $'+Math.round(crossRev)+'M';
+        break;
+      }
+    }
+    if(crossX!==null) drawRevFlag(ctx,crossX,a,crossLabel,'rgba(180,83,9,.92)');
+  }};
+  new Chart(document.getElementById('scenario-rev-chart').getContext('2d'),{
+    type:'line',
+    plugins:[annotPlugin],
+    data:{
+      labels:revPoints.map(v=>'$'+v+'M'),
+      datasets:[
+        {label:'旧报价',data:dO,borderColor:'#8C7355',backgroundColor:'rgba(140,115,85,.06)',borderWidth:2.5,fill:true,tension:.4,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#8C7355',pointBorderColor:'#fff',pointBorderWidth:2.5,pointStyle:'circle'},
+        {label:'新AAA',data:dA,borderColor:'#1C5499',backgroundColor:'rgba(28,84,153,.10)',borderWidth:2.5,fill:true,tension:.4,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#1C5499',pointBorderColor:'#fff',pointBorderWidth:2.5,pointStyle:'circle'},
+        {label:'新AA方案一',data:d1,borderColor:'#5B4B8A',backgroundColor:'rgba(91,75,138,.05)',borderWidth:2,borderDash:[7,4],fill:false,tension:.4,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:'#5B4B8A',pointBorderColor:'#fff',pointBorderWidth:2},
+        {label:'新AA方案二',data:d2,borderColor:'#1B6B6B',backgroundColor:'rgba(27,107,107,.05)',borderWidth:2,borderDash:[3,4],fill:false,tension:.4,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:'#1B6B6B',pointBorderColor:'#fff',pointBorderWidth:2},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      animation:{duration:400,easing:'easeOutQuart'},
+      layout:{padding:{top:32}},
+      plugins:{legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(13,25,38,.96)',
+          titleColor:'rgba(255,255,255,.55)',bodyColor:'rgba(255,255,255,.88)',
+          padding:14,cornerRadius:10,
+          borderColor:'rgba(255,255,255,.1)',borderWidth:1,
+          titleFont:{family:"'PingFang SC','Inter',sans-serif",size:11},
+          bodyFont:{family:"'Inter','PingFang SC',sans-serif",size:12},
+          callbacks:{
+            title:i=>`年流水 ${i[0].label} / 项目`,
+            label:c=>{const sym=['●','■','◆','▲'][c.datasetIndex];return ` ${sym} ${c.dataset.label}  ¥${c.parsed.y.toFixed(2)}亿`;}
+          }
+        }
+      },
+      scales:{
+        x:{
+          grid:{color:'rgba(17,24,39,.05)',lineWidth:1},
+          border:{display:false},
+          title:{display:true,text:'每项目年流水 (USD)',font:{family:"'PingFang SC','Inter',sans-serif",size:12},color:'#6B7280',padding:{top:8}},
+          ticks:{font:{family:"'Inter','PingFang SC',sans-serif",size:11},color:'#6B7280',maxRotation:0,padding:4}
+        },
+        y:{
+          grid:{color:'rgba(17,24,39,.05)',lineWidth:1},
+          border:{display:false},
+          title:{display:true,text:'11年累计支出（亿元 RMB）',font:{family:"'PingFang SC','Inter',sans-serif",size:12},color:'#6B7280',padding:{bottom:8}},
+          ticks:{font:{family:"'Inter','PingFang SC',sans-serif",size:11},color:'#6B7280',callback:v=>'¥'+v.toFixed(1)+'亿',maxTicksLimit:9},beginAtZero:true
+        }
+      }
+    }
+  });
+})();
+
+// ══ 附件表格渲染
+(function renderAppendixTable(){
+  // 计算每年各方案的"当年应付"（不含预充值注入的运营费用）和"预充值抵扣金额"
+  const d=calcAll(500,50,0.02);
+  const modes=[d.dO,d.dA,d.d1,d.d2];
+  const modeNames=['old','aaa','aa1','aa2'];
+  const schemeColors=['#8C7355','#1C5499','#5B4B8A','#1B6B6B'];
+  const schemeBgColors=['rgba(140,115,85,.07)','rgba(28,84,153,.07)','rgba(91,75,138,.07)','rgba(27,107,107,.07)'];
+  const schemeBdColors=['rgba(140,115,85,.28)','rgba(28,84,153,.28)','rgba(91,75,138,.28)','rgba(27,107,107,.28)'];
+  const schemeDash=['rgba(140,115,85,.45)','rgba(28,84,153,.45)','rgba(91,75,138,.45)','rgba(27,107,107,.45)'];
+
+  // 每年数据：
+  //   当年应付（逐年行）= cash + pb_used = 毛额（预充值年显示注入额，运营年显示费用毛额）
+  //   可抵扣 = pb_used（当年实际抵扣的预充值金额）
+  // 合计行：
+  //   当年应付（合计）= sum(cash) = 净现金流出合计
+  //   可抵扣合计 = sum(pb_used)
+  function getRows(modeData){
+    return YEARS.map((yr,i)=>{
+      const r=modeData.rows[i];
+      const pb=modeData.pbRows[i];
+      return{
+        yr,
+        payable: +(r.cash + pb.pb_used).toFixed(3),  // 毛额：实际付出 + 本年抵扣
+        deduct: +pb.pb_used.toFixed(3)
+      };
+    });
+  }
+  const allRows=modes.map(getRows);
+
+  // 汇总行：净现金流（含预充值注入本身）
+  const totals=modes.map((m)=>{
+    const totalPay=+m.rows[N-1].cum.toFixed(3);           // 净现金累计
+    const totalDeduct=+m.pbRows.reduce((s,r)=>s+r.pb_used,0).toFixed(3);
+    return{totalPay,totalDeduct};
+  });
+
+  const fmtV=v=>v>0.001?v.toFixed(2):'—';
+  let html='';
+  YEARS.forEach((yr,i)=>{
+    const isLaunch=yr===2029;
+    const isPrepay=yr<=2027;
+    const cls=isLaunch?'tr-launch':isPrepay?'tr-prepay':'';
+    const yrTag=isLaunch?'<span class="yr-chip launch">上线</span>':isPrepay?' <span class="yr-chip prepay">预充值</span>':'';
+    let rowHtml=`<tr class="${cls}"><td style="font-weight:700;white-space:nowrap">${yr}${yrTag}</td>`;
+    allRows.forEach((rows,mi)=>{
+      const r=rows[i];
+      const borderL=mi>0?`border-left:2px solid ${schemeBdColors[mi]};`:'';
+      const payBg=r.payable>0.001?`background:${schemeBgColors[mi]};`:'';
+      rowHtml+=`<td style="${borderL}${payBg}color:${schemeColors[mi]};font-weight:${r.payable>0.001?'600':'400'}">${fmtV(r.payable)}</td>`;
+      if(mi===0) return; // 旧报价无抵扣列
+      const deductStyle=r.deduct>0.001?`color:${schemeColors[mi]};font-weight:600;border:1.5px dashed ${schemeDash[mi]};border-radius:4px;padding:2px 5px`:'color:#9CA3AF';
+      rowHtml+=`<td><span style="${deductStyle}">${fmtV(r.deduct)}</span></td>`;
+    });
+    rowHtml+='</tr>';
+    html+=rowHtml;
+  });
+  // 合计行
+  html+=`<tr class="tr-total"><td>合计</td>`;
+  totals.forEach((t,mi)=>{
+    const borderL=mi>0?`border-left:2px solid ${schemeBdColors[mi]};`:'';
+    html+=`<td style="${borderL}color:${schemeColors[mi]};font-weight:700">$${t.totalPay.toFixed(2)}M</td>`;
+    if(mi===0) return; // 旧报价无抵扣列
+    html+=`<td style="color:${schemeColors[mi]};font-weight:700">${t.totalDeduct>0.001?'$'+t.totalDeduct.toFixed(2)+'M':'—'}</td>`;
+  });
+  html+='</tr>';
+  document.getElementById('appendix-body').innerHTML=html;
+  // 导航链接追加
+  const nav=document.querySelector('.nav-inner');
+  if(nav&&!document.querySelector('a[href="#sec-appendix"]')){
+    const a=document.createElement('a');
+    a.href='#sec-appendix';a.className='nav-link';
+    a.innerHTML='<span class="nav-num">附件</span> 应付明细';
+    nav.appendChild(a);
+  }
+})();
+
+// 稳定期年均节省
+(()=>{
+  function f(c,r,T){let fee=0,fr=c,to=c+r,p=0;for(const[m,rt]of T){if(to<=p)break;if(fr>=m){p=m;continue;}const lo=Math.max(fr,p),hi=Math.min(to,m);if(hi>lo)fee+=(hi-lo)*rt;p=m;}return fee;}
+  const save=[['FPS',500],['MOBA',500],['沙盒',500]].reduce((s,[,rev])=>{const c=rev*2;return s+(f(c,rev,T_OLD)-f(c,rev,T_AAA));},0);
+  const val='¥'+(save*FX*TAX/100).toFixed(2)+'亿/年';
+  ['db-ann-save'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=val;});
+  // 填充报价条款对比表中的11年总费用
+  const d500=calcAll(500,50,0.02);
+  const toY=m=>'¥'+(m*FX*TAX/100).toFixed(2)+'亿';
+  const pairs=[['cmp-old-total',d500.dO],['cmp-aaa-total',d500.dA],['cmp-aa1-total',d500.d1],['cmp-aa2-total',d500.d2]];
+  pairs.forEach(([id,md])=>{const el=document.getElementById(id);if(el)el.textContent=toY(md.rows[N-1].cum);});
+})();
+</script>
+</body>
+</html>
