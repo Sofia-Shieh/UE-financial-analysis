@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UE 报价方案对比及测算分析 · 决策支持 2026–2036</title>
+<title>UE 报价方案对比及测算分析</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 /* ══════════════════════════════════════════
    TOKEN SYSTEM
-   字号 3档: 12px / 14px / 30px
+   字号 3档: 12px / 14px / 20px
    字族 2个: --f(正文) / --fm(数字数据)
    方案色彩重映射:
      旧报价 → 中性蓝灰  #8C7355
@@ -59,6 +59,7 @@
 
   /* Header */
   --hdr-bg:#0D1926;
+  --dark:#1A2535;
 
   /* Typography */
   --f:'PingFang SC','Inter','Noto Sans SC',sans-serif;
@@ -97,7 +98,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--t-primary);-webkit-fo
   color:rgba(255,255,255,.42);letter-spacing:.12em;text-transform:uppercase;
 }
 .hdr-sep{color:rgba(255,255,255,.18)}
-.hdr-title{font-family:var(--f);font-size:28px;font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1.15;margin-bottom:4px}
+.hdr-title{font-family:var(--f);font-size:40px;font-weight:700;color:#fff;letter-spacing:-.03em;line-height:1.1;margin-bottom:6px}
 .hdr-subtitle{font-family:var(--fm);font-size:var(--sz-sm);color:rgba(255,255,255,.4);letter-spacing:.05em}
 
 /* 核心结论横幅 — 第一视觉焦点 */
@@ -201,7 +202,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--t-primary);-webkit-fo
   border-left:4px solid var(--c-aaa);
   border-radius:var(--r-md);padding:16px 20px;margin-bottom:16px;
 }
-.decision-conclusion-title{font-size:var(--sz-lg);font-weight:700;color:var(--t-primary);margin-bottom:8px;letter-spacing:-.01em}
+.decision-conclusion-title{font-size:16px;font-weight:700;color:var(--t-primary);margin-bottom:8px;letter-spacing:-.01em}
 .decision-conclusion-body{font-size:var(--sz-md);color:var(--t-secondary);line-height:1.75}
 .decision-conclusion-body strong{color:var(--t-primary);font-weight:700}
 
@@ -253,6 +254,17 @@ body{font-family:var(--f);background:var(--bg);color:var(--t-primary);-webkit-fo
 .chart-tabs{display:flex;gap:2px;background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:3px}
 .ctab{font-size:var(--sz-sm);padding:5px 14px;border-radius:999px;border:none;cursor:pointer;font-family:var(--f);color:var(--t-muted);background:transparent;transition:all .15s;font-weight:500}
 .ctab.on{background:#fff;color:var(--t-primary);font-weight:600;box-shadow:var(--sh-sm)}
+/* dc 持平年卡片 */
+.dc-be-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.dc-be-card:hover{box-shadow:var(--sh-md)}
+.dc-be-card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;transition:background .4s}
+.dc-be-label{font-size:11px;color:var(--t-muted);margin-bottom:8px;letter-spacing:.02em}
+.dc-be-val{font-size:22px;font-weight:700;font-family:var(--fm);letter-spacing:-.02em;line-height:1;margin-bottom:6px;transition:opacity .32s cubic-bezier(.4,0,.2,1),transform .32s cubic-bezier(.4,0,.2,1)}
+.dc-be-val.dc-fade{opacity:0;transform:translateY(-8px) scale(.95)}
+.dc-be-sub{font-size:11px;color:var(--t-muted);min-height:14px;transition:opacity .28s ease;font-family:var(--fm)}
+.dc-be-bar-wrap{margin-top:10px;height:5px;border-radius:3px;background:var(--border);overflow:hidden}
+.dc-be-bar{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1),background .4s}
+.dc-be-yr-row{display:flex;justify-content:space-between;font-size:9.5px;color:var(--t-faint);font-family:var(--fm);margin-top:4px}
 
 /* ══════════ TABLE SHARED ══════════ */
 .tbl-wrap{overflow-x:auto}
@@ -265,8 +277,8 @@ th{
 }
 th:first-child{text-align:left}
 td{
-  font-family:var(--fm);font-size:13px;
-  padding:9px 12px;text-align:right;border-bottom:1px solid var(--border);
+  font-family:var(--fm);font-size:14px;
+  padding:8px 14px;text-align:right;border-bottom:1px solid var(--border);
   color:var(--t-secondary);
 }
 td:first-child{text-align:left;font-weight:600;color:var(--t-primary)}
@@ -398,7 +410,7 @@ tr:hover td{background:rgba(28,84,153,.03)}
 .rate-hd{padding:16px 18px 12px}
 .rate-label{font-family:var(--fm);font-size:11px;color:var(--t-muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-weight:500}
 .rate-lic{font-family:var(--fm);font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1}
-.rate-lic-sub{font-size:var(--sz-sm);color:var(--t-muted);margin-top:4px}
+.rate-lic-sub{font-size:var(--sz-sm);color:var(--t-muted);margin-top:6px;padding:5px 10px;background:var(--bg);border-radius:var(--r-sm);border:1px solid var(--border);display:inline-block;line-height:1.4}
 .rate-tiers{border-top:1px solid var(--border)}
 .rate-tier{display:flex;justify-content:space-between;align-items:center;padding:8px 18px;border-bottom:1px solid rgba(0,0,0,.04);font-size:var(--sz-sm)}
 .rate-tier:last-child{border-bottom:none}
@@ -430,13 +442,15 @@ tr:hover td{background:rgba(28,84,153,.03)}
 
 /* ══════════ FOOTER ══════════ */
 .doc-footer{
-  margin-top:16px;padding:16px 24px;
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);
-  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+  margin-top:16px;padding:20px 28px;
+  background:var(--hdr-bg);
+  border-radius:var(--r-xl);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
 }
-.footer-text{font-family:var(--fm);font-size:15px;color:var(--t-muted);line-height:1.8}
+.footer-text{font-family:var(--fm);font-size:12px;color:rgba(255,255,255,.45);line-height:2;letter-spacing:.01em}
+.footer-text strong{color:rgba(255,255,255,.75);font-weight:600}
 .footer-tags{display:flex;gap:8px;flex-wrap:wrap}
-.footer-tag{font-family:var(--fm);font-size:14px;padding:3px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--border);color:var(--t-muted)}
+.footer-tag{font-family:var(--fm);font-size:11px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);letter-spacing:.02em}
 
 /* ══════════ YEAR TAG CHIPS ══════════ */
 .yr-chip{
@@ -456,7 +470,7 @@ tr:hover td{background:rgba(28,84,153,.03)}
 }
 @media(max-width:768px){
   .hdr{padding:20px 20px 16px}
-  .hdr-title{font-size:20px}
+  .hdr-title{font-size:26px}
   .conclusion-banner{grid-template-columns:auto 1fr;grid-template-rows:auto auto}
   .cb-stat,.cb-divider{display:none}
   .page{padding:16px 16px 60px}
@@ -503,7 +517,7 @@ tr:hover td{background:rgba(28,84,153,.03)}
       <span class="hdr-sep">·</span>
       <span class="hdr-eyebrow">2026 – 2036</span>
     </div>
-    <div class="hdr-title">UE5 报价方案对比分析</div>
+    <div class="hdr-title">UE 报价方案对比及测算分析</div>
     <div class="hdr-subtitle">旧报价 &nbsp;/&nbsp; 新AAA &nbsp;/&nbsp; 新AA 方案一 &nbsp;/&nbsp; 新AA 方案二 丨 FPS/MOBA/沙盒 丨 累计阶梯费率 丨 2026-2036年支出测算</div>
 
   </div>
@@ -518,7 +532,8 @@ tr:hover td{background:rgba(28,84,153,.03)}
     <a href="#sec04" class="nav-link"><span class="nav-num">04</span> 场景分析</a>
     <a href="#sec05" class="nav-link"><span class="nav-num">05</span> NPV敏感性</a>
     <a href="#sec06" class="nav-link"><span class="nav-num">06</span> 逐年明细</a>
-    <a href="#sec-app" class="nav-link"><span class="nav-num">附</span> 报价条款</a>
+    <a href="#sec-app" class="nav-link"><span class="nav-num">附件</span> 报价条款</a>
+    <a href="#sec-decay" class="nav-link"><span class="nav-num">衰</span> 流水衰减</a>
   </div>
 </nav>
 
@@ -528,55 +543,169 @@ tr:hover td{background:rgba(28,84,153,.03)}
 <div class="section" id="sec01">
   <div class="section-hd">
     <span class="section-num">01</span>
-    <span class="section-title">四方案 11 年累计支出总览</span>
+    <span class="section-title">四方案总览</span>
     <span style="font-family:var(--fm);font-size:11px;color:var(--t-muted)">人民币 · 含税 · 累计阶梯 · 基准 $500M 流水/项目</span>
   </div>
-  <div class="cards-grid">
-    <!-- 旧报价 -->
-    <div class="scard c-old">
-      <div class="scard-top-bar"></div>
-      <div class="scard-label">旧报价 · 现行协议</div>
-      <div class="scard-amount" id="v-old-rmb">—</div>
-      <div class="scard-usd" id="v-old-usd">—</div>
-      <div class="scard-divider"></div>
-      <div class="scard-row"><span class="scard-rlbl">NPV @2%</span><span class="scard-rval" id="v-old-npv">—</span></div>
-      <div class="scard-row"><span class="scard-rlbl">年均支出</span><span class="scard-rval" id="v-old-avg">—</span></div>
+
+  <!-- ══ 总支出横幅 ══ -->
+  <div style="margin:0 24px 20px;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--border)">
+    <!-- 标题行 -->
+    <div style="background:var(--dark);padding:10px 20px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-family:var(--fm);font-size:12px;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.08em">11 年累计总支出对比（亿元人民币）</span>
+      <span style="font-size:11px;color:rgba(255,255,255,.35)">基准：$500M 年流水 / 项目</span>
     </div>
-    <!-- 新 AAA -->
-    <div class="scard c-aaa">
-      <div class="scard-top-bar"></div>
-      <div class="scard-badge recommended" id="v-aaa-badge">推荐方案</div>
-      <div class="scard-label">新报价 AAA</div>
-      <div class="scard-amount" id="v-aaa-rmb">—</div>
-      <div class="scard-usd" id="v-aaa-usd">—</div>
-      <div class="scard-divider"></div>
-      <div class="scard-row"><span class="scard-rlbl">NPV @2%</span><span class="scard-rval" id="v-aaa-npv">—</span></div>
-      <div class="scard-row"><span class="scard-rlbl">年均支出</span><span class="scard-rval" id="v-aaa-avg">—</span></div>
+    <!-- 四方案数值行 -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr)">
+
+      <!-- 旧报价 -->
+      <div style="padding:20px 22px 18px;border-right:1px solid var(--border);background:var(--c-old-bg);position:relative">
+        <div style="font-size:11px;font-weight:600;color:var(--c-old);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">旧报价 · 现行协议</div>
+        <div style="font-family:var(--fm);font-size:38px;font-weight:800;color:var(--c-old);line-height:1;letter-spacing:-.02em" id="v-old-rmb">—</div>
+        <div style="font-family:var(--fm);font-size:12px;color:var(--t-faint);margin-top:5px" id="v-old-usd">—</div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:3px">
+          <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t-muted)">NPV @2%</span><span style="font-weight:600;color:var(--t-secondary)" id="v-old-npv">—</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t-muted)">年均支出</span><span style="font-weight:600;color:var(--t-secondary)" id="v-old-avg">—</span></div>
+        </div>
+      </div>
+
+      <!-- 新 AAA 推荐 -->
+      <div style="padding:20px 22px 18px;border-right:1px solid var(--c-aaa-bd);background:linear-gradient(135deg,#eef3fb 0%,#dce8f8 100%);position:relative">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="font-size:11px;font-weight:700;color:var(--c-aaa);letter-spacing:.08em;text-transform:uppercase">新报价 AAA</span>
+          <span style="font-size:10px;font-weight:700;background:var(--c-aaa);color:#fff;padding:2px 8px;border-radius:999px">✦ 推荐</span>
+        </div>
+        <div style="font-family:var(--fm);font-size:38px;font-weight:800;color:var(--c-aaa);line-height:1;letter-spacing:-.02em" id="v-aaa-rmb">—</div>
+        <div style="font-family:var(--fm);font-size:12px;color:var(--t-faint);margin-top:5px" id="v-aaa-usd">—</div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:3px">
+          <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t-muted)">NPV @2%</span><span style="font-weight:600;color:var(--c-aaa)" id="v-aaa-npv">—</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t-muted)">年均支出</span><span style="font-weight:600;color:var(--c-aaa)" id="v-aaa-avg">—</span></div>
+          <div style="margin-top:8px;display:none;align-items:center;justify-content:center;gap:5px;padding:5px 10px;background:var(--save-bg);border:1px solid var(--save-bd);border-radius:6px;font-size:11px;font-weight:700;color:var(--save)" id="v-aaa-save-vs-old"></div>
+        </div>
+      </div>
+
+      <!-- 新AA方案一 -->
+      <div style="padding:20px 22px 18px;border-right:1px solid var(--border);background:var(--c-aa1-bg)">
+        <div style="font-size:11px;font-weight:600;color:var(--c-aa1);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">新AA 方案一 · $750万 Lic</div>
+        <div style="font-family:var(--fm);font-size:38px;font-weight:800;color:var(--c-aa1);line-height:1;letter-spacing:-.02em" id="v-aa1-rmb">—</div>
+        <div style="font-family:var(--fm);font-size:12px;color:var(--t-faint);margin-top:5px" id="v-aa1-usd">—</div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:3px">
+          <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t-muted)">NPV @2%</span><span style="font-weight:600;color:var(--t-secondary)" id="v-aa1-npv">—</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t-muted)">年均支出</span><span style="font-weight:600;color:var(--t-secondary)" id="v-aa1-avg">—</span></div>
+        </div>
+      </div>
+
+      <!-- 新AA方案二 -->
+      <div style="padding:20px 22px 18px;background:var(--c-aa2-bg)">
+        <div style="font-size:11px;font-weight:600;color:var(--c-aa2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">新AA 方案二 · $500万 Lic</div>
+        <div style="font-family:var(--fm);font-size:38px;font-weight:800;color:var(--c-aa2);line-height:1;letter-spacing:-.02em" id="v-aa2-rmb">—</div>
+        <div style="font-family:var(--fm);font-size:12px;color:var(--t-faint);margin-top:5px" id="v-aa2-usd">—</div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:3px">
+          <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t-muted)">NPV @2%</span><span style="font-weight:600;color:var(--t-secondary)" id="v-aa2-npv">—</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t-muted)">年均支出</span><span style="font-weight:600;color:var(--t-secondary)" id="v-aa2-avg">—</span></div>
+        </div>
+      </div>
+
     </div>
-    <!-- 新 AA 方案一 -->
-    <div class="scard c-aa1">
-      <div class="scard-top-bar"></div>
-      <div class="scard-label">新AA 方案一 · $750万 Lic</div>
-      <div class="scard-amount" id="v-aa1-rmb">—</div>
-      <div class="scard-usd" id="v-aa1-usd">—</div>
-      <div class="scard-divider"></div>
-      <div class="scard-row"><span class="scard-rlbl">NPV @2%</span><span class="scard-rval" id="v-aa1-npv">—</span></div>
-      <div class="scard-row"><span class="scard-rlbl">年均支出</span><span class="scard-rval" id="v-aa1-avg">—</span></div>
+  </div>
+
+  <!-- ══ 关键参数卡片（无总费用行） ══ -->
+  <div style="padding:0 24px 8px;font-size:13px;font-weight:600;color:var(--t-muted);letter-spacing:.04em"> 费率结构 &amp; License 详情</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:0 24px 24px">
+
+    <!-- ── 旧报价 ── -->
+    <div style="border:1px solid var(--c-old-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--surface)">
+      <div style="height:4px;background:var(--c-old)"></div>
+      <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--c-old);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px">旧报价 · 现行协议</div>
+        <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:6px">
+          <span style="font-size:11px;color:var(--t-muted)">License/项目</span>
+          <span style="font-family:var(--fm);font-size:18px;font-weight:700;color:var(--c-old)">$500万</span>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:5px;background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:3px 9px;font-size:12px;color:#999">
+          <span>⊘</span> 无预充值要求
+        </div>
+      </div>
+      <div style="padding:10px 16px 14px">
+        <div style="font-size:11px;font-weight:600;color:var(--t-muted);letter-spacing:.06em;margin-bottom:7px">分成费率阶梯</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">≤$5亿</span><span style="font-weight:600;color:var(--c-old)">1.25%</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">$5–$10亿</span><span style="font-weight:600;color:var(--c-old)">1.00%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 8px;background:var(--c-old-bg);border-radius:5px"><span style="color:var(--t-muted)">$10亿以上</span><span style="font-weight:700;color:var(--c-old)">0.75%</span></div>
+      </div>
     </div>
-    <!-- 新 AA 方案二 -->
-    <div class="scard c-aa2">
-      <div class="scard-top-bar"></div>
-      <div class="scard-label">新AA 方案二 · $500万 Lic</div>
-      <div class="scard-amount" id="v-aa2-rmb">—</div>
-      <div class="scard-usd" id="v-aa2-usd">—</div>
-      <div class="scard-divider"></div>
-      <div class="scard-row"><span class="scard-rlbl">NPV @2%</span><span class="scard-rval" id="v-aa2-npv">—</span></div>
-      <div class="scard-row"><span class="scard-rlbl">年均支出</span><span class="scard-rval" id="v-aa2-avg">—</span></div>
+
+    <!-- ── 新AAA 推荐 ── -->
+    <div style="border:2px solid var(--c-aaa-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--surface);box-shadow:0 4px 16px rgba(28,84,153,.10)">
+      <div style="height:4px;background:var(--c-aaa)"></div>
+      <div style="padding:14px 16px 12px;border-bottom:1px solid var(--c-aaa-bd);background:var(--c-aaa-bg)">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+          <span style="font-size:11px;font-weight:700;color:var(--c-aaa);letter-spacing:.1em;text-transform:uppercase">新报价 AAA</span>
+          <span style="font-size:10px;font-weight:700;background:var(--c-aaa);color:#fff;padding:2px 6px;border-radius:999px">✦ 推荐</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:7px">
+          <span style="font-size:11px;color:var(--t-muted)">License/项目</span>
+          <span style="font-family:var(--fm);font-size:18px;font-weight:700;color:var(--c-aaa)">$1,500万</span>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(28,84,153,.08);border:1.5px solid var(--c-aaa-bd);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--c-aaa);font-weight:600">
+          💰 $5,000万预充值 · 可抵扣
+        </div>
+      </div>
+      <div style="padding:10px 16px 14px">
+        <div style="font-size:11px;font-weight:600;color:var(--t-muted);letter-spacing:.06em;margin-bottom:7px">分成费率阶梯</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">≤$2.5亿</span><span style="font-weight:600;color:var(--c-aaa)">1.00%</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">$2.5–$5亿</span><span style="font-weight:600;color:var(--c-aaa)">0.75%</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">$5–$10亿</span><span style="font-weight:600;color:var(--c-aaa)">0.50%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 8px;background:var(--c-aaa-bg);border-radius:5px"><span style="color:var(--t-muted)">$10亿以上</span><span style="font-weight:700;color:var(--c-aaa)">0.25% ★ 比例最低</span></div>
+      </div>
     </div>
+
+    <!-- ── 新AA方案一 ── -->
+    <div style="border:1px solid var(--c-aa1-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--surface)">
+      <div style="height:4px;background:var(--c-aa1)"></div>
+      <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--c-aa1);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px">新AA 方案一</div>
+        <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:7px">
+          <span style="font-size:11px;color:var(--t-muted)">License/项目</span>
+          <span style="font-family:var(--fm);font-size:18px;font-weight:700;color:var(--c-aa1)">$750万</span>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(5,122,85,.06);border:1.5px solid var(--c-aa1-bd);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--c-aa1);font-weight:600">
+          💰 $5,000万预充值 · 可抵扣
+        </div>
+      </div>
+      <div style="padding:10px 16px 14px">
+        <div style="font-size:11px;font-weight:600;color:var(--t-muted);letter-spacing:.06em;margin-bottom:7px">分成费率阶梯</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">≤$2.5亿</span><span style="font-weight:600;color:var(--c-aa1)">1.50%</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">$2.5–$5亿</span><span style="font-weight:600;color:var(--c-aa1)">1.25%</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">$5–$10亿</span><span style="font-weight:600;color:var(--c-aa1)">1.00%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 8px;background:var(--c-aa1-bg);border-radius:5px"><span style="color:var(--t-muted)">$10亿以上</span><span style="font-weight:700;color:var(--c-aa1)">0.75%</span></div>
+      </div>
+    </div>
+
+    <!-- ── 新AA方案二 ── -->
+    <div style="border:1px solid var(--c-aa2-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--surface)">
+      <div style="height:4px;background:var(--c-aa2)"></div>
+      <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--c-aa2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px">新AA 方案二</div>
+        <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:7px">
+          <span style="font-size:11px;color:var(--t-muted)">License/项目</span>
+          <span style="font-family:var(--fm);font-size:18px;font-weight:700;color:var(--c-aa2)">$500万</span>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(124,58,237,.06);border:1.5px solid var(--c-aa2-bd);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--c-aa2);font-weight:600">
+          💰 $5,000万预充值 · 可抵扣
+        </div>
+      </div>
+      <div style="padding:10px 16px 14px">
+        <div style="font-size:11px;font-weight:600;color:var(--t-muted);letter-spacing:.06em;margin-bottom:7px">分成费率阶梯</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">≤$2.5亿</span><span style="font-weight:600;color:var(--c-aa2)">2.00%</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">$2.5–$5亿</span><span style="font-weight:600;color:var(--c-aa2)">1.75%</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">$5–$15亿</span><span style="font-weight:600;color:var(--c-aa2)">1.50%/1.25%</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span style="color:var(--t-muted)">$15–$20亿</span><span style="font-weight:600;color:var(--c-aa2)">1.00%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 8px;background:var(--c-aa2-bg);border-radius:5px"><span style="color:var(--t-muted)">$20亿以上</span><span style="font-weight:700;color:var(--c-aa2)">0.75%</span></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- ══════════ 02 决策摘要 ══════════ -->
 <div class="section" id="sec02">
   <div class="section-hd">
     <span class="section-num">02</span>
@@ -651,42 +780,47 @@ tr:hover td{background:rgba(28,84,153,.03)}
     </div>
   </div>
   <div class="section-body">
-    <!-- 持平年份 -->
-    <div class="be-row">
-      <div class="be-card">
-        <div class="be-card-line" style="background:var(--c-aaa)"></div>
-        <div class="be-content">
-          <div class="be-lbl">旧报价 vs 新AAA · 持平年</div>
-          <div class="be-val" id="be-aaa" style="color:var(--c-aaa)">—</div>
-          <div class="be-hint">此后AAA方案持续节省</div>
+    <!-- 持平年份 + 图表容器 -->
+    <div style="border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:0">
+      <!-- 持平年份 -->
+      <div class="be-row" style="border-bottom:1px solid var(--border);margin-bottom:0;padding:16px 20px">
+        <div class="be-card" style="border:none;padding:0">
+          <div class="be-card-line" style="background:var(--c-aaa)"></div>
+          <div class="be-content">
+            <div class="be-lbl">旧报价 vs 新AAA · 持平年</div>
+            <div class="be-val" id="be-aaa" style="color:var(--c-aaa)">—</div>
+            <div class="be-hint">此后AAA方案持续节省</div>
+          </div>
+        </div>
+        <div class="be-card" style="border:none;padding:0">
+          <div class="be-card-line" style="background:var(--c-aa1)"></div>
+          <div class="be-content">
+            <div class="be-lbl">旧报价 vs 新AA 方案一 · 持平年</div>
+            <div class="be-val" id="be-aa1" style="color:var(--c-aa1)">—</div>
+            <div class="be-hint">AA 方案一稳定期无费率优势</div>
+          </div>
+        </div>
+        <div class="be-card" style="border:none;padding:0">
+          <div class="be-card-line" style="background:var(--c-aa2)"></div>
+          <div class="be-content">
+            <div class="be-lbl">旧报价 vs 新AA 方案二 · 持平年</div>
+            <div class="be-val" id="be-aa2" style="color:var(--c-aa2)">—</div>
+            <div class="be-hint">AA 方案二高费率拖累竞争力</div>
+          </div>
         </div>
       </div>
-      <div class="be-card">
-        <div class="be-card-line" style="background:var(--c-aa1)"></div>
-        <div class="be-content">
-          <div class="be-lbl">旧报价 vs 新AA 方案一 · 持平年</div>
-          <div class="be-val" id="be-aa1" style="color:var(--c-aa1)">—</div>
-          <div class="be-hint">AA 方案一稳定期无费率优势</div>
+      <!-- 图例 + 切换提示 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--bg);border-bottom:1px solid var(--border)">
+        <div class="chart-legend" style="margin-top:0">
+          <div class="leg-item"><div class="leg-dot" style="background:var(--c-old)"></div>旧报价</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--c-aaa)"></div>新AAA</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa1)"></div>新AA 方案一</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa2)"></div>新AA 方案二</div>
         </div>
+        <span id="chart-mode-badge" style="font-size:11px;font-weight:600;color:var(--c-aaa);background:var(--c-aaa-bg);border:1px solid var(--c-aaa-bd);padding:2px 10px;border-radius:999px">累计支出</span>
       </div>
-      <div class="be-card">
-        <div class="be-card-line" style="background:var(--c-aa2)"></div>
-        <div class="be-content">
-          <div class="be-lbl">旧报价 vs 新AA 方案二 · 持平年</div>
-          <div class="be-val" id="be-aa2" style="color:var(--c-aa2)">—</div>
-          <div class="be-hint">AA 方案二高费率拖累竞争力</div>
-        </div>
-      </div>
+      <div class="chart-wrap" style="padding:16px 20px"><canvas id="main-chart"></canvas></div>
     </div>
-
-    <!-- 图例 -->
-    <div class="chart-legend">
-      <div class="leg-item"><div class="leg-dot" style="background:var(--c-old)"></div>旧报价</div>
-      <div class="leg-item"><div class="leg-dot" style="background:var(--c-aaa)"></div>新AAA</div>
-      <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa1)"></div>新AA 方案一</div>
-      <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa2)"></div>新AA 方案二</div>
-    </div>
-    <div class="chart-wrap"><canvas id="main-chart"></canvas></div>
   </div>
 </div>
 
@@ -739,12 +873,12 @@ tr:hover td{background:rgba(28,84,153,.03)}
       <div class="scr-item">
         <div class="scr-lbl">新 AA 方案一 11年</div>
         <div class="scr-val" id="sc-aa1" style="color:var(--c-aa1)">—</div>
-        <div class="scr-sub" id="sc-aa1-npv">—</div>
+        <div class="scr-sub" id="sc-aa1-npv">NPV —</div>
       </div>
       <div class="scr-item">
         <div class="scr-lbl">新 AA 方案二 11年</div>
         <div class="scr-val" id="sc-aa2" style="color:var(--c-aa2)">—</div>
-        <div class="scr-sub" id="sc-aa2-npv">—</div>
+        <div class="scr-sub" id="sc-aa2-npv">NPV —</div>
       </div>
     </div>
 
@@ -772,19 +906,23 @@ tr:hover td{background:rgba(28,84,153,.03)}
     </div>
 
     <!-- 场景折线图：不同流水下各方案11年总费用对比 -->
-    <div style="margin-top:20px">
-      <div style="font-size:18px;font-weight:700;color:var(--t-primary);margin-bottom:8px">不同年流水下四方案 11 年总费用对比</div>
-      <div style="font-size:13px;color:var(--t-muted);margin-bottom:12px">横轴为每项目年流水，纵轴为 11 年累计支出。折线交叉点代表方案转换的流水临界值，交叉点左侧选更低的方案，右侧同理。</div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px">
-        <div class="leg-item"><div class="leg-dot" style="background:var(--c-old)"></div>旧报价</div>
-        <div class="leg-item"><div class="leg-dot" style="background:var(--c-aaa)"></div>新 AAA</div>
-        <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa1)"></div>新 AA 方案一</div>
-        <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa2)"></div>新 AA 方案二</div>
+    <div style="margin-top:24px;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
+      <div style="padding:16px 20px 14px;border-bottom:1px solid var(--border);background:var(--bg)">
+        <div style="font-size:16px;font-weight:700;color:var(--t-primary);margin-bottom:4px">不同年流水下四方案 11 年总费用对比</div>
+        <div style="font-size:12px;color:var(--t-muted)">横轴为每项目年流水，纵轴为 11 年累计支出。折线交叉点代表方案转换的流水临界值，交叉点左侧选更低的方案，右侧同理。</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px">
+          <div class="leg-item"><div class="leg-dot" style="background:var(--c-old)"></div>旧报价</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--c-aaa)"></div>新 AAA</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa1)"></div>新 AA 方案一</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa2)"></div>新 AA 方案二</div>
+        </div>
       </div>
+      <div style="padding:16px 20px">
       <div style="position:relative;width:100%;aspect-ratio:2/1"><canvas id="scenario-rev-chart"></canvas></div>
 
       <!-- 流水区间方案推荐文字，放在图下方 -->
-      <div id="sc-insight" style="margin-top:16px;padding:14px 18px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);font-size:13px;color:var(--t-secondary);line-height:1.85">正在计算...</div>
+      <div id="sc-insight" style="margin-top:14px;padding:12px 16px;background:var(--c-aaa-bg);border:1px solid var(--c-aaa-bd);border-radius:var(--r-md);font-size:13px;color:var(--t-secondary);line-height:1.85">正在计算...</div>
+      </div>
     </div>
   </div>
 </div>
@@ -839,183 +977,376 @@ tr:hover td{background:rgba(28,84,153,.03)}
       <button class="ctab" id="yt-ann-btn" onclick="switchYrTable('ann')">当年支出</button>
     </div>
   </div>
-  <div class="tbl-hdr">
-    <span class="tbl-hdr-title" id="yt-title">四方案累计支出（亿元）</span>
-    <span class="tbl-hdr-sub">蓝色 = 当年最低方案</span>
-  </div>
-  <div class="tbl-wrap">
-    <table><thead><tr id="yt-hdr"></tr></thead><tbody id="yt-body"></tbody></table>
+  <div style="padding:0 20px">
+    <div class="tbl-hdr" style="border-radius:var(--r-md) var(--r-md) 0 0;margin-top:16px">
+      <span class="tbl-hdr-title" id="yt-title">四方案累计支出（亿元）</span>
+      <span class="tbl-hdr-sub">蓝色 = 当年最低方案</span>
+    </div>
+    <div class="tbl-wrap" style="border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r-md) var(--r-md);overflow:hidden;margin-bottom:20px">
+      <table><thead><tr id="yt-hdr"></tr></thead><tbody id="yt-body"></tbody></table>
+    </div>
   </div>
 </div>
 
-<!-- ══════════ 附录：报价条款 ══════════ -->
+<!-- ══════════ 07 流水衰减模拟 ══════════ -->
+<div class="section" id="sec-decay">
+  <div class="section-hd">
+    <span class="section-num" style="color:var(--c-aa1);background:rgba(91,75,138,.08);border-color:rgba(91,75,138,.18)">衰</span>
+    <span class="section-title">自然流水衰减模拟</span>
+    <span style="font-family:var(--fm);font-size:11px;color:var(--t-muted);margin-left:auto">基于典型 F2P 衰减模型 · 单项目独立累计阶梯</span>
+  </div>
+
+  <div class="section-body">
+
+    <!-- 预设模型选择 -->
+    <div style="margin-bottom:18px">
+      <div style="font-size:12px;font-weight:600;color:var(--t-secondary);margin-bottom:10px;letter-spacing:.02em">衰减模式预设</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="decay-preset-row"></div>
+    </div>
+
+    <!-- 流水统计摘要 -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px">
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px">
+        <div style="font-size:11px;color:var(--t-muted);margin-bottom:4px">峰值流水</div>
+        <div style="font-size:18px;font-weight:700;color:var(--c-aaa);font-family:var(--fm)" id="dc-stat-peak">—</div>
+        <div style="font-size:10px;color:var(--t-faint);font-family:var(--fm)" id="dc-stat-peak-yr">—</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px">
+        <div style="font-size:11px;color:var(--t-muted);margin-bottom:4px">8年累计流水</div>
+        <div style="font-size:18px;font-weight:700;color:var(--c-aaa);font-family:var(--fm)" id="dc-stat-total">—</div>
+        <div style="font-size:10px;color:var(--t-faint)">2029—2036年</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px">
+        <div style="font-size:11px;color:var(--t-muted);margin-bottom:4px">末年流水</div>
+        <div style="font-size:18px;font-weight:700;color:var(--c-aaa);font-family:var(--fm)" id="dc-stat-last">—</div>
+        <div style="font-size:10px;color:var(--t-faint);font-family:var(--fm)" id="dc-stat-last-pct">—</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px">
+        <div style="font-size:11px;color:var(--t-muted);margin-bottom:4px">固定流水基准</div>
+        <div style="font-size:18px;font-weight:700;color:var(--t-muted);font-family:var(--fm)">$5亿/年</div>
+        <div style="font-size:10px;color:var(--t-faint)">当前模型对比基准</div>
+      </div>
+    </div>
+
+    <!-- 逐年流水滑块 -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:600;color:var(--t-secondary);margin-bottom:10px;letter-spacing:.02em">逐年流水调整（每项目，$M）</div>
+      <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:8px" id="decay-slider-grid"></div>
+    </div>
+
+    <!-- 四方案汇总卡片 -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      <div style="border:1px solid var(--c-old-bd);border-radius:var(--r-lg);padding:16px;background:var(--c-old-bg);position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--c-old)"></div>
+        <div style="font-size:10px;color:var(--c-old);letter-spacing:.1em;font-weight:600;text-transform:uppercase;margin-bottom:8px;font-family:var(--fm)">旧报价</div>
+        <div style="font-size:26px;font-weight:700;color:var(--c-old);font-family:var(--fm);letter-spacing:-.02em;line-height:1" id="dc-old-rmb">—</div>
+        <div style="font-size:11px;color:var(--t-faint);font-family:var(--fm);margin-top:2px;margin-bottom:10px" id="dc-old-usd">—</div>
+        <div style="height:1px;background:var(--c-old-bd);margin-bottom:8px"></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t-muted);margin-bottom:4px"><span>NPV @2%</span><span style="font-family:var(--fm);font-weight:600;color:var(--t-secondary)" id="dc-old-npv">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t-muted)"><span>年均支出</span><span style="font-family:var(--fm);font-weight:600;color:var(--t-secondary)" id="dc-old-avg">—</span></div>
+      </div>
+      <div style="border:1px solid var(--c-aaa-bd);border-radius:var(--r-lg);padding:16px;background:var(--c-aaa-bg);position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--c-aaa)"></div>
+        <div style="position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--save-bg);color:var(--save);border:1px solid var(--save-bd)" id="dc-aaa-badge"></div>
+        <div style="font-size:10px;color:var(--c-aaa);letter-spacing:.1em;font-weight:600;text-transform:uppercase;margin-bottom:8px;font-family:var(--fm)">新报价 AAA</div>
+        <div style="font-size:26px;font-weight:700;color:var(--c-aaa);font-family:var(--fm);letter-spacing:-.02em;line-height:1" id="dc-aaa-rmb">—</div>
+        <div style="font-size:11px;color:var(--t-faint);font-family:var(--fm);margin-top:2px;margin-bottom:10px" id="dc-aaa-usd">—</div>
+        <div style="height:1px;background:var(--c-aaa-bd);margin-bottom:8px"></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t-muted);margin-bottom:4px"><span>NPV @2%</span><span style="font-family:var(--fm);font-weight:600;color:var(--t-secondary)" id="dc-aaa-npv">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t-muted);margin-bottom:8px"><span>年均支出</span><span style="font-family:var(--fm);font-weight:600;color:var(--t-secondary)" id="dc-aaa-avg">—</span></div>
+        <div style="font-size:12px;font-weight:700" id="dc-aaa-vs"></div>
+      </div>
+      <div style="border:1px solid rgba(91,75,138,.18);border-radius:var(--r-lg);padding:16px;background:rgba(91,75,138,.05);position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--c-aa1)"></div>
+        <div style="font-size:10px;color:var(--c-aa1);letter-spacing:.1em;font-weight:600;text-transform:uppercase;margin-bottom:8px;font-family:var(--fm)">新AA 方案一</div>
+        <div style="font-size:26px;font-weight:700;color:var(--c-aa1);font-family:var(--fm);letter-spacing:-.02em;line-height:1" id="dc-aa1-rmb">—</div>
+        <div style="font-size:11px;color:var(--t-faint);font-family:var(--fm);margin-top:2px;margin-bottom:10px" id="dc-aa1-usd">—</div>
+        <div style="height:1px;background:rgba(91,75,138,.15);margin-bottom:8px"></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t-muted);margin-bottom:4px"><span>NPV @2%</span><span style="font-family:var(--fm);font-weight:600;color:var(--t-secondary)" id="dc-aa1-npv">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t-muted);margin-bottom:8px"><span>年均支出</span><span style="font-family:var(--fm);font-weight:600;color:var(--t-secondary)" id="dc-aa1-avg">—</span></div>
+        <div style="font-size:12px;font-weight:700" id="dc-aa1-vs"></div>
+      </div>
+      <div style="border:1px solid rgba(27,107,107,.18);border-radius:var(--r-lg);padding:16px;background:rgba(27,107,107,.05);position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--c-aa2)"></div>
+        <div style="font-size:10px;color:var(--c-aa2);letter-spacing:.1em;font-weight:600;text-transform:uppercase;margin-bottom:8px;font-family:var(--fm)">新AA 方案二</div>
+        <div style="font-size:26px;font-weight:700;color:var(--c-aa2);font-family:var(--fm);letter-spacing:-.02em;line-height:1" id="dc-aa2-rmb">—</div>
+        <div style="font-size:11px;color:var(--t-faint);font-family:var(--fm);margin-top:2px;margin-bottom:10px" id="dc-aa2-usd">—</div>
+        <div style="height:1px;background:rgba(27,107,107,.15);margin-bottom:8px"></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t-muted);margin-bottom:4px"><span>NPV @2%</span><span style="font-family:var(--fm);font-weight:600;color:var(--t-secondary)" id="dc-aa2-npv">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t-muted);margin-bottom:8px"><span>年均支出</span><span style="font-family:var(--fm);font-weight:600;color:var(--t-secondary)" id="dc-aa2-avg">—</span></div>
+        <div style="font-size:12px;font-weight:700" id="dc-aa2-vs"></div>
+      </div>
+    </div>
+
+    <!-- 持平年 -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+      <!-- AAA -->
+      <div class="dc-be-card" id="dc-be-card-aaa">
+        <div class="dc-be-card-accent" id="dc-be-accent-aaa" style="background:var(--c-aaa)"></div>
+        <div class="dc-be-label">旧报价 vs 新AAA · 持平年</div>
+        <div class="dc-be-val" id="dc-be-aaa">—</div>
+        <div class="dc-be-sub" id="dc-be-sub-aaa"></div>
+        <div class="dc-be-bar-wrap"><div class="dc-be-bar" id="dc-be-bar-aaa" style="width:0%;background:var(--c-aaa)"></div></div>
+        <div class="dc-be-yr-row"><span>2029</span><span>2036</span></div>
+      </div>
+      <!-- AA1 -->
+      <div class="dc-be-card" id="dc-be-card-aa1">
+        <div class="dc-be-card-accent" id="dc-be-accent-aa1" style="background:var(--c-aa1)"></div>
+        <div class="dc-be-label">旧报价 vs 新AA方案一 · 持平年</div>
+        <div class="dc-be-val" id="dc-be-aa1">—</div>
+        <div class="dc-be-sub" id="dc-be-sub-aa1"></div>
+        <div class="dc-be-bar-wrap"><div class="dc-be-bar" id="dc-be-bar-aa1" style="width:0%;background:var(--c-aa1)"></div></div>
+        <div class="dc-be-yr-row"><span>2029</span><span>2036</span></div>
+      </div>
+      <!-- AA2 -->
+      <div class="dc-be-card" id="dc-be-card-aa2">
+        <div class="dc-be-card-accent" id="dc-be-accent-aa2" style="background:var(--c-aa2)"></div>
+        <div class="dc-be-label">旧报价 vs 新AA方案二 · 持平年</div>
+        <div class="dc-be-val" id="dc-be-aa2">—</div>
+        <div class="dc-be-sub" id="dc-be-sub-aa2"></div>
+        <div class="dc-be-bar-wrap"><div class="dc-be-bar" id="dc-be-bar-aa2" style="width:0%;background:var(--c-aa2)"></div></div>
+        <div class="dc-be-yr-row"><span>2029</span><span>2036</span></div>
+      </div>
+    </div>
+
+    <!-- 双图：累计支出 + 年度流水 -->
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:14px">
+      <div style="border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
+        <div style="padding:14px 18px 12px;border-bottom:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--t-primary)" id="dc-chart-title">四方案累计支出（亿元）</div>
+            <div style="display:flex;gap:14px;margin-top:6px;flex-wrap:wrap">
+              <div class="leg-item"><div class="leg-dot" style="background:var(--c-old)"></div>旧报价</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--c-aaa)"></div>新AAA</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa1)"></div>新AA方案一</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--c-aa2)"></div>新AA方案二</div>
+            </div>
+          </div>
+          <div class="chart-tabs">
+            <button class="ctab on" id="dc-csw-cum" onclick="dcSwitchChart('cum')">累计</button>
+            <button class="ctab" id="dc-csw-ann" onclick="dcSwitchChart('ann')">当年</button>
+          </div>
+        </div>
+        <div style="padding:14px"><div style="position:relative;height:280px"><canvas id="dc-main-chart"></canvas></div></div>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
+        <div style="padding:14px 18px 12px;border-bottom:1px solid var(--border);background:var(--bg)">
+          <div style="font-size:14px;font-weight:700;color:var(--t-primary)">各项目年度流水（$亿/项目）</div>
+          <div style="font-size:11px;color:var(--t-muted);margin-top:2px">趋势线 · 深蓝柱为峰值年</div>
+        </div>
+        <div style="padding:14px"><div style="position:relative;height:280px"><canvas id="dc-rev-chart"></canvas></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <div class="section" id="sec-app">
   <div class="section-hd">
-    <span class="section-num">附录</span>
+    <span class="section-num">附件</span>
     <span class="section-title">四方案报价条款对照</span>
-    <span style="font-family:var(--fm);font-size:11px;color:var(--t-muted)" class="section-action">费率结构 · License · 预充值要求</span>
+    <span style="font-family:var(--fm);font-size:11px;color:var(--t-muted)" class="section-action">费率结构 · License · 预充值 · UGC · 技术支持 · 生态</span>
   </div>
-  <div class="rate-grid">
-    <!-- 旧报价 -->
-    <div class="rate-card c-old">
-      <div class="rate-accent"></div>
-      <div class="rate-hd">
-        <div class="rate-label">旧报价 · 现行协议</div>
-        <div class="rate-lic" style="color:var(--c-old)">$500 万</div>
-        <div class="rate-lic-sub">License / 项目 · 无预充值要求</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:0 24px 24px">
+      <!-- 旧报价 -->
+      <div style="border:1px solid var(--c-old-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--c-old-bg);display:flex;flex-direction:column">
+        <div style="height:5px;background:var(--c-old)"></div>
+        <div style="padding:20px 20px 16px">
+          <div style="font-size:11px;color:var(--c-old);letter-spacing:.1em;font-weight:700;text-transform:uppercase;margin-bottom:10px">旧报价 · 现行协议</div>
+          <div style="font-size:28px;font-weight:800;color:var(--c-old);line-height:1;font-family:var(--fm)">$500 万</div>
+          <div style="font-size:12px;color:var(--t-muted);margin-top:10px;padding:4px 10px;background:#fff;border-radius:6px;border:1px solid var(--c-old-bd);display:inline-block;letter-spacing:.01em">无预充值要求</div>
+        </div>
+        <div style="border-top:1px solid var(--c-old-bd);flex:1;display:flex;flex-direction:column">
+          <div style="padding:10px 20px 5px;font-size:10px;font-weight:700;color:var(--t-muted);letter-spacing:.08em;text-transform:uppercase">分成阶梯</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">≤$5亿</span><span style="font-weight:600;color:var(--c-old)">1.25%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$5–$10亿</span><span style="font-weight:600;color:var(--c-old)">1.00%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$10亿以上</span><span style="font-weight:700;color:var(--c-old)">0.75%</span></div>
+          <div style="padding:10px 20px 5px;font-size:10px;font-weight:700;color:var(--t-muted);letter-spacing:.08em;text-transform:uppercase;margin-top:auto;border-top:1px solid rgba(0,0,0,.08)">技术支持 &amp; 其他</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">技术支持费</span><span style="font-weight:600;color:var(--t-secondary)">$25万/年</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">UGC 分成</span><span style="font-weight:600;color:var(--t-secondary)">5%（可选）</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px 14px;font-size:13px"><span style="color:var(--t-muted)">生态系统</span><span style="font-weight:600;color:var(--t-secondary)">EGS/EOS/KWS</span></div>
+        </div>
       </div>
-      <div class="rate-tiers">
-        <div class="rate-tier"><span class="rate-tier-lbl">流水 ≤ $5亿</span><span class="rate-tier-val" style="color:var(--c-old)">1.25%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$5 – $10亿</span><span class="rate-tier-val" style="color:var(--c-old)">1.00%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$10亿 以上</span><span class="rate-tier-val" style="color:var(--c-old)">0.75%</span></div>
-        <div class="rate-tier" style="border-top:1px solid var(--border)"><span class="rate-tier-lbl">技术支持费</span><span class="rate-tier-val" style="color:var(--t-muted)">$25 万/年</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">UGC 分成</span><span class="rate-tier-val" style="color:var(--t-muted)">5%（可选）</span></div>
+      <!-- 新AAA -->
+      <div style="border:2px solid var(--c-aaa-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--c-aaa-bg);display:flex;flex-direction:column">
+        <div style="height:5px;background:var(--c-aaa)"></div>
+        <div style="padding:20px 20px 16px">
+          <div style="font-size:11px;color:var(--c-aaa);letter-spacing:.1em;font-weight:700;text-transform:uppercase;margin-bottom:10px">新报价 AAA ✦ 推荐</div>
+          <div style="font-size:28px;font-weight:800;color:var(--c-aaa);line-height:1;font-family:var(--fm)">$1,500 万</div>
+          <div style="font-size:12px;color:var(--c-aaa);margin-top:10px;padding:4px 10px;background:#fff;border-radius:6px;border:1px solid var(--c-aaa-bd);display:inline-block;font-weight:600;letter-spacing:.01em">$5,000万预充值 · 可抵扣</div>
+        </div>
+        <div style="border-top:1px solid var(--c-aaa-bd);flex:1;display:flex;flex-direction:column">
+          <div style="padding:10px 20px 5px;font-size:10px;font-weight:700;color:var(--t-muted);letter-spacing:.08em;text-transform:uppercase">分成阶梯</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">≤$2.5亿</span><span style="font-weight:600;color:var(--c-aaa)">1.00%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$2.5–$5亿</span><span style="font-weight:600;color:var(--c-aaa)">0.75%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$5–$10亿</span><span style="font-weight:600;color:var(--c-aaa)">0.50%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$10亿以上</span><span style="font-weight:700;color:var(--c-aaa)">0.25% ★</span></div>
+          <div style="padding:10px 20px 5px;font-size:10px;font-weight:700;color:var(--t-muted);letter-spacing:.08em;text-transform:uppercase;margin-top:auto;border-top:1px solid rgba(0,0,0,.08)">技术支持 &amp; 生态</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">EPS 工程师座席</span><span style="font-weight:600;color:var(--t-secondary)">$1.5万/项目</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">UGC 分成</span><span style="font-weight:600;color:var(--t-secondary)">同流水阶梯</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px 14px;font-size:13px"><span style="color:var(--t-muted)">生态系统</span><span style="font-weight:600;color:var(--c-aaa)">EGS/EOS/KWS</span></div>
+        </div>
+      </div>
+      <!-- 新AA方案一 -->
+      <div style="border:1px solid var(--c-aa1-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--c-aa1-bg);display:flex;flex-direction:column">
+        <div style="height:5px;background:var(--c-aa1)"></div>
+        <div style="padding:20px 20px 16px">
+          <div style="font-size:11px;color:var(--c-aa1);letter-spacing:.1em;font-weight:700;text-transform:uppercase;margin-bottom:10px">新 AA 方案一</div>
+          <div style="font-size:28px;font-weight:800;color:var(--c-aa1);line-height:1;font-family:var(--fm)">$750 万</div>
+          <div style="font-size:12px;color:var(--c-aa1);margin-top:10px;padding:4px 10px;background:#fff;border-radius:6px;border:1px solid var(--c-aa1-bd);display:inline-block;font-weight:600;letter-spacing:.01em">$5,000万预充值 · 可抵扣</div>
+        </div>
+        <div style="border-top:1px solid var(--c-aa1-bd);flex:1;display:flex;flex-direction:column">
+          <div style="padding:10px 20px 5px;font-size:10px;font-weight:700;color:var(--t-muted);letter-spacing:.08em;text-transform:uppercase">分成阶梯</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">≤$2.5亿</span><span style="font-weight:600;color:var(--c-aa1)">1.50%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$2.5–$5亿</span><span style="font-weight:600;color:var(--c-aa1)">1.25%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$5–$10亿</span><span style="font-weight:600;color:var(--c-aa1)">1.00%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$10亿以上</span><span style="font-weight:700;color:var(--c-aa1)">0.75%</span></div>
+          <div style="padding:10px 20px 5px;font-size:10px;font-weight:700;color:var(--t-muted);letter-spacing:.08em;text-transform:uppercase;margin-top:auto;border-top:1px solid rgba(0,0,0,.08)">技术支持 &amp; 生态</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">EPS 工程师座席</span><span style="font-weight:600;color:var(--t-secondary)">$1.5万/项目</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">UGC 分成</span><span style="font-weight:600;color:var(--t-secondary)">同流水阶梯</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px 14px;font-size:13px"><span style="color:var(--t-muted)">生态系统</span><span style="font-weight:600;color:var(--c-aa1)">EGS/EOS/KWS</span></div>
+        </div>
+      </div>
+      <!-- 新AA方案二 -->
+      <div style="border:1px solid var(--c-aa2-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--c-aa2-bg);display:flex;flex-direction:column">
+        <div style="height:5px;background:var(--c-aa2)"></div>
+        <div style="padding:20px 20px 16px">
+          <div style="font-size:11px;color:var(--c-aa2);letter-spacing:.1em;font-weight:700;text-transform:uppercase;margin-bottom:10px">新 AA 方案二</div>
+          <div style="font-size:28px;font-weight:800;color:var(--c-aa2);line-height:1;font-family:var(--fm)">$500 万</div>
+          <div style="font-size:12px;color:var(--c-aa2);margin-top:10px;padding:4px 10px;background:#fff;border-radius:6px;border:1px solid var(--c-aa2-bd);display:inline-block;font-weight:600;letter-spacing:.01em">$5,000万预充值 · 可抵扣</div>
+        </div>
+        <div style="border-top:1px solid var(--c-aa2-bd);flex:1;display:flex;flex-direction:column">
+          <div style="padding:10px 20px 5px;font-size:10px;font-weight:700;color:var(--t-muted);letter-spacing:.08em;text-transform:uppercase">分成阶梯</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">≤$2.5亿</span><span style="font-weight:600;color:var(--c-aa2)">2.00%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$2.5–$5亿</span><span style="font-weight:600;color:var(--c-aa2)">1.75%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$5–$10亿</span><span style="font-weight:600;color:var(--c-aa2)">1.50%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$10–$15亿</span><span style="font-weight:600;color:var(--c-aa2)">1.25%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$15–$20亿</span><span style="font-weight:600;color:var(--c-aa2)">1.00%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">$20亿以上</span><span style="font-weight:700;color:var(--c-aa2)">0.75%</span></div>
+          <div style="padding:10px 20px 5px;font-size:10px;font-weight:700;color:var(--t-muted);letter-spacing:.08em;text-transform:uppercase;margin-top:auto;border-top:1px solid rgba(0,0,0,.08)">技术支持 &amp; 生态</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">EPS 工程师座席</span><span style="font-weight:600;color:var(--t-secondary)">$1.5万/项目</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px"><span style="color:var(--t-muted)">UGC 分成</span><span style="font-weight:600;color:var(--t-secondary)">同流水阶梯</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 20px 14px;font-size:13px"><span style="color:var(--t-muted)">生态系统</span><span style="font-weight:600;color:var(--c-aa2)">EGS/EOS/KWS</span></div>
+        </div>
       </div>
     </div>
-    <!-- 新 AAA -->
-    <div class="rate-card c-aaa" style="border-color:var(--c-aaa-bd)">
-      <div class="rate-accent"></div>
-      <div class="rate-hd">
-        <div class="rate-label">新报价 AAA ✦ 推荐</div>
-        <div class="rate-lic" style="color:var(--c-aaa)">$1,500 万</div>
-        <div class="rate-lic-sub">License / 项目 · $50M 预充值（可抵扣）</div>
-      </div>
-      <div class="rate-tiers">
-        <div class="rate-tier"><span class="rate-tier-lbl">流水 ≤ $2.5亿</span><span class="rate-tier-val" style="color:var(--c-aaa)">1.00%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$2.5 – $5亿</span><span class="rate-tier-val" style="color:var(--c-aaa)">0.75%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$5 – $10亿</span><span class="rate-tier-val" style="color:var(--c-aaa)">0.50%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$10亿 以上</span><span class="rate-tier-val" style="color:var(--c-aaa);font-weight:700">0.25% ← 最低</span></div>
-        <div class="rate-tier" style="border-top:1px solid var(--border)"><span class="rate-tier-lbl">EPS 工程师座席</span><span class="rate-tier-val" style="color:var(--t-muted)">$1.5 万/项目</span></div>
-      </div>
-    </div>
-    <!-- 新 AA 方案一 -->
-    <div class="rate-card c-aa1">
-      <div class="rate-accent"></div>
-      <div class="rate-hd">
-        <div class="rate-label">新 AA 方案一</div>
-        <div class="rate-lic" style="color:var(--c-aa1)">$750 万</div>
-        <div class="rate-lic-sub">License / 项目 · $50M 预充值</div>
-      </div>
-      <div class="rate-tiers">
-        <div class="rate-tier"><span class="rate-tier-lbl">流水 ≤ $2.5亿</span><span class="rate-tier-val" style="color:var(--c-aa1)">1.50%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$2.5 – $5亿</span><span class="rate-tier-val" style="color:var(--c-aa1)">1.25%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$5 – $10亿</span><span class="rate-tier-val" style="color:var(--c-aa1)">1.00%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$10亿 以上</span><span class="rate-tier-val" style="color:var(--c-aa1)">0.75%</span></div>
-        <div class="rate-tier" style="border-top:1px solid var(--border)"><span class="rate-tier-lbl">稳定期 vs 旧报价</span><span class="rate-tier-val" style="color:var(--warn)">费率持平（均 0.75%）</span></div>
-      </div>
-    </div>
-    <!-- 新 AA 方案二 -->
-    <div class="rate-card c-aa2">
-      <div class="rate-accent"></div>
-      <div class="rate-hd">
-        <div class="rate-label">新 AA 方案二</div>
-        <div class="rate-lic" style="color:var(--c-aa2)">$500 万</div>
-        <div class="rate-lic-sub">License / 项目 · $50M 预充值</div>
-      </div>
-      <div class="rate-tiers">
-        <div class="rate-tier"><span class="rate-tier-lbl">流水 ≤ $2.5亿</span><span class="rate-tier-val" style="color:var(--c-aa2)">2.00%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$2.5 – $5亿</span><span class="rate-tier-val" style="color:var(--c-aa2)">1.75%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$5 – $15亿</span><span class="rate-tier-val" style="color:var(--c-aa2)">1.50% / 1.25%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$15 – $20亿</span><span class="rate-tier-val" style="color:var(--c-aa2)">1.00%</span></div>
-        <div class="rate-tier"><span class="rate-tier-lbl">$20亿 以上</span><span class="rate-tier-val" style="color:var(--c-aa2)">0.75%</span></div>
-      </div>
-    </div>
-  </div>
 
   <div class="note-bar">
-    <strong>累计阶梯规则：</strong>单项目跨年累计叠加，不跨项目合并，不按自然年重置。同一项目历史累计流水越高，适用分成费率越低。KL / UC 已有现行授权，费用为零，不计入本次测算。FPS / MOBA / 沙盒三款游戏各自独立计算费率阶梯。
+    <strong>累计阶梯规则：</strong>单项目跨年累计叠加，不按自然年重置。同一项目历史累计流水越高，适用分成费率越低。KL/UC已有现行授权，费用为零，不计入本次测算。FPS/MOBA/沙盒三款游戏各自独立计算费率阶梯。
   </div>
 
-  <!-- 直观对比：四方案一眼看懂 -->
+  <!-- 直观对比：四方案关键参数一览（卡片式） -->
   <div style="padding:0 24px 24px">
-    <div style="font-size:20px;font-weight:700;color:var(--t-primary);margin-bottom:14px">四方案关键参数一览</div>
-    <div style="overflow-x:auto">
-    <table style="min-width:700px;border-collapse:separate;border-spacing:0 6px">
-      <thead>
-        <tr>
-          <th style="text-align:left;background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">方案</th>
-          <th style="background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">License 费<br><span style="font-weight:400">/项目</span></th>
-          <th style="background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">预充值</th>
-          <th style="background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">分成费率<br><span style="font-weight:400">（累计阶梯，最低→最高）</span></th>
-          <th style="background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">稳定期最低费率<br><span style="font-weight:400">（流水 ≥ $10亿后）</span></th>
-          <th style="background:transparent;border:none;padding:6px 14px;font-size:14px;color:var(--t-muted);letter-spacing:.06em">11年总费用<br><span style="font-weight:400">（$500M 流水）</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- 旧报价 -->
-        <tr>
-          <td style="background:var(--c-old-bg);border:1px solid var(--c-old-bd);border-radius:var(--r-md) 0 0 var(--r-md);padding:14px 16px;font-weight:700;color:var(--c-old)">
-            旧报价<br><span style="font-size:11px;font-weight:400;color:var(--t-muted)">现行协议</span>
-          </td>
-          <td style="background:var(--c-old-bg);border-top:1px solid var(--c-old-bd);border-bottom:1px solid var(--c-old-bd);padding:14px 16px;font-family:var(--fm);text-align:center;font-size:var(--sz-md);font-weight:600;color:var(--c-old)">$500 万</td>
-          <td style="background:var(--c-old-bg);border-top:1px solid var(--c-old-bd);border-bottom:1px solid var(--c-old-bd);padding:14px 16px;text-align:center;font-size:var(--sz-sm);color:var(--t-muted)">无</td>
-          <td style="background:var(--c-old-bg);border-top:1px solid var(--c-old-bd);border-bottom:1px solid var(--c-old-bd);padding:14px 16px;font-size:var(--sz-sm);color:var(--t-secondary)">
-            <div class="rate-ladder">
-              <div class="rl-row"><span class="rl-range">≤$5亿</span><span class="rl-rate" style="color:var(--c-old)">1.25%</span></div>
-              <div class="rl-row"><span class="rl-range">$5 – $10亿</span><span class="rl-rate" style="color:var(--c-old)">1.00%</span></div>
-              <div class="rl-row rl-min"><span class="rl-range">$10亿 以上</span><span class="rl-rate" style="color:var(--c-old);font-weight:700">0.75% ← 最低</span></div>
-            </div>
-          </td>
-          <td style="background:var(--c-old-bg);border-top:1px solid var(--c-old-bd);border-bottom:1px solid var(--c-old-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-lg);font-weight:700;color:var(--c-old)">0.75%</td>
-          <td style="background:var(--c-old-bg);border:1px solid var(--c-old-bd);border-radius:0 var(--r-md) var(--r-md) 0;padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-md);font-weight:700;color:var(--c-old)" id="cmp-old-total">—</td>
-        </tr>
-        <!-- 新AAA -->
-        <tr>
-          <td style="background:var(--c-aaa-bg);border:1px solid var(--c-aaa-bd);border-radius:var(--r-md) 0 0 var(--r-md);padding:14px 16px;font-weight:700;color:var(--c-aaa)">
-            新报价 AAA<br><span style="font-size:11px;font-weight:400;color:var(--t-muted)">$15M License，低分成</span>
-          </td>
-          <td style="background:var(--c-aaa-bg);border-top:1px solid var(--c-aaa-bd);border-bottom:1px solid var(--c-aaa-bd);padding:14px 16px;font-family:var(--fm);text-align:center;font-size:var(--sz-md);font-weight:600;color:var(--c-aaa)">$1,500 万</td>
-          <td style="background:var(--c-aaa-bg);border-top:1px solid var(--c-aaa-bd);border-bottom:1px solid var(--c-aaa-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-sm);font-weight:600;color:var(--c-aaa)">$5,000 万<br><span style="font-size:10px;font-weight:400;color:var(--t-muted)">可抵扣</span></td>
-          <td style="background:var(--c-aaa-bg);border-top:1px solid var(--c-aaa-bd);border-bottom:1px solid var(--c-aaa-bd);padding:14px 16px;font-size:var(--sz-sm);color:var(--t-secondary)">
-            <div class="rate-ladder">
-              <div class="rl-row"><span class="rl-range">≤$2.5亿</span><span class="rl-rate" style="color:var(--c-aaa)">1.00%</span></div>
-              <div class="rl-row"><span class="rl-range">$2.5 – $5亿</span><span class="rl-rate" style="color:var(--c-aaa)">0.75%</span></div>
-              <div class="rl-row"><span class="rl-range">$5 – $10亿</span><span class="rl-rate" style="color:var(--c-aaa)">0.50%</span></div>
-              <div class="rl-row rl-min"><span class="rl-range">$10亿 以上</span><span class="rl-rate" style="color:var(--c-aaa);font-weight:700">0.25% ★ 最低</span></div>
-            </div>
-          </td>
-          <td style="background:var(--c-aaa-bg);border-top:1px solid var(--c-aaa-bd);border-bottom:1px solid var(--c-aaa-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-lg);font-weight:700;color:var(--c-aaa)">0.25%</td>
-          <td style="background:var(--c-aaa-bg);border:1px solid var(--c-aaa-bd);border-radius:0 var(--r-md) var(--r-md) 0;padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-md);font-weight:700;color:var(--c-aaa)" id="cmp-aaa-total">—</td>
-        </tr>
-        <!-- 新AA方案一 -->
-        <tr>
-          <td style="background:var(--c-aa1-bg);border:1px solid var(--c-aa1-bd);border-radius:var(--r-md) 0 0 var(--r-md);padding:14px 16px;font-weight:700;color:var(--c-aa1)">
-            新AA 方案一<br><span style="font-size:11px;font-weight:400;color:var(--t-muted)">$7.5M License，较低分成</span>
-          </td>
-          <td style="background:var(--c-aa1-bg);border-top:1px solid var(--c-aa1-bd);border-bottom:1px solid var(--c-aa1-bd);padding:14px 16px;font-family:var(--fm);text-align:center;font-size:var(--sz-md);font-weight:600;color:var(--c-aa1)">$750 万</td>
-          <td style="background:var(--c-aa1-bg);border-top:1px solid var(--c-aa1-bd);border-bottom:1px solid var(--c-aa1-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-sm);font-weight:600;color:var(--c-aa1)">$5,000 万<br><span style="font-size:10px;font-weight:400;color:var(--t-muted)">可抵扣</span></td>
-          <td style="background:var(--c-aa1-bg);border-top:1px solid var(--c-aa1-bd);border-bottom:1px solid var(--c-aa1-bd);padding:14px 16px;font-size:var(--sz-sm);color:var(--t-secondary)">
-            <div class="rate-ladder">
-              <div class="rl-row"><span class="rl-range">≤$2.5亿</span><span class="rl-rate" style="color:var(--c-aa1)">1.50%</span></div>
-              <div class="rl-row"><span class="rl-range">$2.5 – $5亿</span><span class="rl-rate" style="color:var(--c-aa1)">1.25%</span></div>
-              <div class="rl-row"><span class="rl-range">$5 – $10亿</span><span class="rl-rate" style="color:var(--c-aa1)">1.00%</span></div>
-              <div class="rl-row rl-min"><span class="rl-range">$10亿 以上</span><span class="rl-rate" style="color:var(--c-aa1);font-weight:700">0.75% ← 最低</span></div>
-            </div>
-          </td>
-          <td style="background:var(--c-aa1-bg);border-top:1px solid var(--c-aa1-bd);border-bottom:1px solid var(--c-aa1-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-lg);font-weight:700;color:var(--c-aa1)">0.75%<br><span style="font-size:11px;font-weight:400;color:var(--warn)">= 旧报价</span></td>
-          <td style="background:var(--c-aa1-bg);border:1px solid var(--c-aa1-bd);border-radius:0 var(--r-md) var(--r-md) 0;padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-md);font-weight:700;color:var(--c-aa1)" id="cmp-aa1-total">—</td>
-        </tr>
-        <!-- 新AA方案二 -->
-        <tr>
-          <td style="background:var(--c-aa2-bg);border:1px solid var(--c-aa2-bd);border-radius:var(--r-md) 0 0 var(--r-md);padding:14px 16px;font-weight:700;color:var(--c-aa2)">
-            新AA 方案二<br><span style="font-size:11px;font-weight:400;color:var(--t-muted)">$5M License，较高分成</span>
-          </td>
-          <td style="background:var(--c-aa2-bg);border-top:1px solid var(--c-aa2-bd);border-bottom:1px solid var(--c-aa2-bd);padding:14px 16px;font-family:var(--fm);text-align:center;font-size:var(--sz-md);font-weight:600;color:var(--c-aa2)">$500 万</td>
-          <td style="background:var(--c-aa2-bg);border-top:1px solid var(--c-aa2-bd);border-bottom:1px solid var(--c-aa2-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-sm);font-weight:600;color:var(--c-aa2)">$5,000 万<br><span style="font-size:10px;font-weight:400;color:var(--t-muted)">可抵扣</span></td>
-          <td style="background:var(--c-aa2-bg);border-top:1px solid var(--c-aa2-bd);border-bottom:1px solid var(--c-aa2-bd);padding:14px 16px;font-size:var(--sz-sm);color:var(--t-secondary)">
-            <div class="rate-ladder">
-              <div class="rl-row"><span class="rl-range">≤$2.5亿</span><span class="rl-rate" style="color:var(--c-aa2)">2.00%</span></div>
-              <div class="rl-row"><span class="rl-range">$2.5 – $5亿</span><span class="rl-rate" style="color:var(--c-aa2)">1.75%</span></div>
-              <div class="rl-row"><span class="rl-range">$5 – $10亿</span><span class="rl-rate" style="color:var(--c-aa2)">1.50% / 1.25%</span></div>
-              <div class="rl-row"><span class="rl-range">$15 – $20亿</span><span class="rl-rate" style="color:var(--c-aa2)">1.00%</span></div>
-              <div class="rl-row rl-min"><span class="rl-range">$20亿 以上</span><span class="rl-rate" style="color:var(--c-aa2);font-weight:700">0.75% ← 最低</span></div>
-            </div>
-          </td>
-          <td style="background:var(--c-aa2-bg);border-top:1px solid var(--c-aa2-bd);border-bottom:1px solid var(--c-aa2-bd);padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-lg);font-weight:700;color:var(--c-aa2)">0.75%<br><span style="font-size:11px;font-weight:400;color:var(--warn)">需流水 >$20亿</span></td>
-          <td style="background:var(--c-aa2-bg);border:1px solid var(--c-aa2-bd);border-radius:0 var(--r-md) var(--r-md) 0;padding:14px 16px;text-align:center;font-family:var(--fm);font-size:var(--sz-md);font-weight:700;color:var(--c-aa2)" id="cmp-aa2-total">—</td>
-        </tr>
-      </tbody>
-    </table>
+    <div style="font-size:20px;font-weight:700;color:var(--t-primary);margin-bottom:16px">四方案关键参数一览</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+
+      <!-- ── 旧报价 ── -->
+      <div style="border:1px solid var(--c-old-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--surface);display:flex;flex-direction:column">
+        <div style="height:4px;background:var(--c-old)"></div>
+        <div style="padding:16px 18px 14px;border-bottom:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;color:var(--c-old);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">旧报价 · 现行协议</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px">
+            <span style="font-size:11px;color:var(--t-muted)">License/项目</span>
+            <span style="font-family:var(--fm);font-size:20px;font-weight:700;color:var(--c-old)">$500万</span>
+          </div>
+          <div style="display:inline-flex;align-items:center;gap:5px;background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:4px 10px;font-size:12px;color:#999">
+            <span style="font-size:14px">⊘</span> 无预充值要求
+          </div>
+        </div>
+        <div style="padding:12px 18px;flex:1">
+          <div style="font-size:11px;font-weight:600;color:var(--t-muted);letter-spacing:.06em;margin-bottom:8px">分成费率阶梯</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">≤$5亿</span><span style="font-weight:600;color:var(--c-old)">1.25%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">$5–$10亿</span><span style="font-weight:600;color:var(--c-old)">1.00%</span></div>
+           <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:13px;padding:6px 8px;background:var(--c-old-bg);border-radius:6px"><span style="color:var(--t-muted)">$10亿以上</span><span style="font-weight:700;color:var(--c-old)">0.75%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border)">
+            <span style="font-size:12px;color:var(--t-muted)">11年总费用</span>
+            <span style="font-family:var(--fm);font-size:16px;font-weight:700;color:var(--c-old)" id="cmp-old-total">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 新AAA 推荐 ── -->
+      <div style="border:2px solid var(--c-aaa-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--surface);display:flex;flex-direction:column;box-shadow:0 4px 16px rgba(28,84,153,.12)">
+        <div style="height:4px;background:var(--c-aaa)"></div>
+        <div style="padding:16px 18px 14px;border-bottom:1px solid var(--c-aaa-bd);background:var(--c-aaa-bg)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span style="font-size:11px;font-weight:700;color:var(--c-aaa);letter-spacing:.1em;text-transform:uppercase">新报价 AAA</span>
+            <span style="font-size:10px;font-weight:700;background:var(--c-aaa);color:#fff;padding:2px 7px;border-radius:999px">✦ 推荐</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px">
+            <span style="font-size:11px;color:var(--t-muted)">License/项目</span>
+            <span style="font-family:var(--fm);font-size:20px;font-weight:700;color:var(--c-aaa)">$1,500万</span>
+          </div>
+          <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(28,84,153,.08);border:1.5px solid var(--c-aaa-bd);border-radius:6px;padding:5px 12px;font-size:12px;color:var(--c-aaa);font-weight:600">
+            💰 $5,000万预充值 · <span style="font-weight:700">可抵扣</span>
+          </div>
+        </div>
+        <div style="padding:12px 18px;flex:1">
+          <div style="font-size:11px;font-weight:600;color:var(--t-muted);letter-spacing:.06em;margin-bottom:8px">分成费率阶梯</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">≤$2.5亿</span><span style="font-weight:600;color:var(--c-aaa)">1.00%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">$2.5–$5亿</span><span style="font-weight:600;color:var(--c-aaa)">0.75%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">$5–$10亿</span><span style="font-weight:600;color:var(--c-aaa)">0.50%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:13px;padding:6px 8px;background:var(--c-aaa-bg);border-radius:6px"><span style="color:var(--t-muted)">$10亿以上</span><span style="font-weight:700;color:var(--c-aaa)">0.25% ★ 最优折扣</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--c-aaa-bd)">
+            <span style="font-size:12px;color:var(--t-muted)">11年总费用</span>
+            <span style="font-family:var(--fm);font-size:16px;font-weight:700;color:var(--c-aaa)" id="cmp-aaa-total">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 新AA方案一 ── -->
+      <div style="border:1px solid var(--c-aa1-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--surface);display:flex;flex-direction:column">
+        <div style="height:4px;background:var(--c-aa1)"></div>
+        <div style="padding:16px 18px 14px;border-bottom:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;color:var(--c-aa1);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">新AA 方案一</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px">
+            <span style="font-size:11px;color:var(--t-muted)">License/项目</span>
+            <span style="font-family:var(--fm);font-size:20px;font-weight:700;color:var(--c-aa1)">$750万</span>
+          </div>
+          <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(5,122,85,.06);border:1.5px solid var(--c-aa1-bd);border-radius:6px;padding:5px 12px;font-size:12px;color:var(--c-aa1);font-weight:600">
+            💰 $5,000万预充值 · <span style="font-weight:700">可抵扣</span>
+          </div>
+        </div>
+        <div style="padding:12px 18px;flex:1">
+          <div style="font-size:11px;font-weight:600;color:var(--t-muted);letter-spacing:.06em;margin-bottom:8px">分成费率阶梯</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">≤$2.5亿</span><span style="font-weight:600;color:var(--c-aa1)">1.50%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">$2.5–$5亿</span><span style="font-weight:600;color:var(--c-aa1)">1.25%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">$5–$10亿</span><span style="font-weight:600;color:var(--c-aa1)">1.00%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:13px;padding:6px 8px;background:var(--c-aa1-bg);border-radius:6px"><span style="color:var(--t-muted)">$10亿以上</span><span style="font-weight:700;color:var(--c-aa1)">0.75%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border)">
+            <span style="font-size:12px;color:var(--t-muted)">11年总费用</span>
+            <span style="font-family:var(--fm);font-size:16px;font-weight:700;color:var(--c-aa1)" id="cmp-aa1-total">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 新AA方案二 ── -->
+      <div style="border:1px solid var(--c-aa2-bd);border-radius:var(--r-lg);overflow:hidden;background:var(--surface);display:flex;flex-direction:column">
+        <div style="height:4px;background:var(--c-aa2)"></div>
+        <div style="padding:16px 18px 14px;border-bottom:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;color:var(--c-aa2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">新AA 方案二</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px">
+            <span style="font-size:11px;color:var(--t-muted)">License/项目</span>
+            <span style="font-family:var(--fm);font-size:20px;font-weight:700;color:var(--c-aa2)">$500万</span>
+          </div>
+          <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(124,58,237,.06);border:1.5px solid var(--c-aa2-bd);border-radius:6px;padding:5px 12px;font-size:12px;color:var(--c-aa2);font-weight:600">
+            💰 $5,000万预充值 · <span style="font-weight:700">可抵扣</span>
+          </div>
+        </div>
+        <div style="padding:12px 18px;flex:1">
+          <div style="font-size:11px;font-weight:600;color:var(--t-muted);letter-spacing:.06em;margin-bottom:8px">分成费率阶梯</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">≤$2.5亿</span><span style="font-weight:600;color:var(--c-aa2)">2.00%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">$2.5–$5亿</span><span style="font-weight:600;color:var(--c-aa2)">1.75%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">$5–$15亿</span><span style="font-weight:600;color:var(--c-aa2)">1.50%/1.25%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="color:var(--t-muted)">$15–$20亿</span><span style="font-weight:600;color:var(--c-aa2)">1.00%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:13px;padding:6px 8px;background:var(--c-aa2-bg);border-radius:6px"><span style="color:var(--t-muted)">$20亿以上</span><span style="font-weight:700;color:var(--c-aa2)">0.75%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border)">
+            <span style="font-size:12px;color:var(--t-muted)">11年总费用</span>
+            <span style="font-family:var(--fm);font-size:16px;font-weight:700;color:var(--c-aa2)" id="cmp-aa2-total">—</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1080,18 +1411,17 @@ tr:hover td{background:rgba(28,84,153,.03)}
     </div>
   </div>
 </div>
-
 <!-- FOOTER -->
 <div class="doc-footer">
   <div class="footer-text">
-    <strong>UE5 报价决策支持工具 V12</strong> · 内部测算，仅供参考<br>
+    <strong>UE 报价方案对比及测算分析</strong>     （内部测算，仅供参考） <br>
     汇率假设：USD/CNY = 7.0 · 增值税附加系数 = 1.13 · 测算周期：2026–2036（11年）<br>
-    三款游戏：FPS / MOBA / 沙盒 · 独立累计阶梯 · KL / UC 授权不计入
+    三款游戏：FPS/MOBA/沙盒 · 独立累计阶梯 · KL/UC授权不计入
   </div>
   <div class="footer-tags">
     <span class="footer-tag">基准 $500M 流水</span>
     <span class="footer-tag">折现率 2%</span>
-    <span class="footer-tag">结论依赖流水达标</span>
+    <span class="footer-tag">结论依赖实际流水</span>
   </div>
 </div>
 
@@ -1263,6 +1593,9 @@ function initCharts(d){
 function switchChart(v){
   chartView=v;
   ['cum','ann','annNet'].forEach(k=>{const el=document.getElementById('csw-'+k);if(el)el.className='ctab'+(k===v?' on':'');});
+  const labels={'cum':'累计支出','ann':'当年支出','annNet':'累计运营成本'};
+  const badge=document.getElementById('chart-mode-badge');
+  if(badge)badge.textContent=labels[v]||v;
   if(G)initCharts(G);
 }
 
@@ -1275,6 +1608,8 @@ function renderCards(d){
   set('v-old-npv',yiRmb(npvO));set('v-old-avg',yiRmbShort(lO/N)+'/年');
   set('v-aaa-rmb',yiRmb(lA));set('v-aaa-usd',usdStr(lA));
   set('v-aaa-npv',yiRmb(npvA));set('v-aaa-avg',yiRmbShort(lA/N)+'/年');
+  const saveEl=document.getElementById('v-aaa-save-vs-old');
+  if(saveEl){if(lA<lO){saveEl.textContent='↓ 比旧报价节省 '+yiRmbShort(lO-lA);saveEl.style.display='flex';}else{saveEl.style.display='none';}}
   set('v-aa1-rmb',yiRmb(l1));set('v-aa1-usd',usdStr(l1));
   set('v-aa1-npv',yiRmb(npv1));set('v-aa1-avg',yiRmbShort(l1/N)+'/年');
   set('v-aa2-rmb',yiRmb(l2));set('v-aa2-usd',usdStr(l2));
@@ -1427,7 +1762,10 @@ function onScenario(){
   document.getElementById('sc-aaa').textContent=yiRmb(lA);
   document.getElementById('sc-aaa-npv').textContent='NPV '+yiRmb(npvA);
   document.getElementById('sc-aa1').textContent=yiRmb(l1);
+  const npv1s=d.d1.npvCum[N-1],npv2s=d.d2.npvCum[N-1];
+  document.getElementById('sc-aa1-npv').textContent='NPV '+yiRmb(npv1s);
   document.getElementById('sc-aa2').textContent=yiRmb(l2);
+  document.getElementById('sc-aa2-npv').textContent='NPV '+yiRmb(npv2s);
 
   // 求三组临界值
   const be_old_aaa=findBEBisect('old','aaa',pb,rate);
@@ -1542,7 +1880,7 @@ onScenario();
         const x1=s.x.getPixelForTick(i-1), x2=s.x.getPixelForTick(i);
         crossX=x1+t*(x2-x1);
         const crossRev=revPoints[i-1]+t*(revPoints[i]-revPoints[i-1]);
-        crossLabel='旧价=AAA  $'+Math.round(crossRev)+'M';
+        crossLabel='旧报价=AAA $'+Math.round(crossRev)+'M';
         break;
       }
     }
@@ -1684,6 +2022,363 @@ onScenario();
   const toY=m=>'¥'+(m*FX*TAX/100).toFixed(2)+'亿';
   const pairs=[['cmp-old-total',d500.dO],['cmp-aaa-total',d500.dA],['cmp-aa1-total',d500.d1],['cmp-aa2-total',d500.d2]];
   pairs.forEach(([id,md])=>{const el=document.getElementById(id);if(el)el.textContent=toY(md.rows[N-1].cum);});
+})();
+
+// ══════════════════════════════════════════════
+// 流水衰减模拟模块
+// ══════════════════════════════════════════════
+(()=>{
+
+const DC_YEARS = Array.from({length:11},(_,i)=>2026+i);
+const DC_N = DC_YEARS.length;
+const DC_FX=7.0, DC_TAX=1.13;
+
+// 预设衰减模型
+const DC_PRESETS=[
+  {id:'standard',name:'标准衰减',sub:'峰值$7.5亿·8年$33.8亿',
+   rev:[500,750,630,470,320,200,110,60],
+   stages:['上线首年','峰值年','开始衰退','加速下滑','稳定收缩','内容ROI下降','接近临界线','尾部期']},
+  {id:'slow',name:'缓慢衰减',sub:'峰值$6亿·8年$35亿',
+   rev:[450,600,560,520,480,440,400,360],
+   stages:['上线首年','峰值年','微弱衰退','稳定期','长尾运营','长尾运营','长尾运营','长尾运营']},
+  {id:'fast',name:'快速衰减',sub:'峰值$6亿·8年$19亿',
+   rev:[400,600,380,220,140,100,80,60],
+   stages:['上线首年','峰值年','快速下滑','加速流失','核心用户','维护运营','维护运营','维护运营']},
+  {id:'flat',name:'固定流水',sub:'每年$5亿（基准）',
+   rev:[500,500,500,500,500,500,500,500],
+   stages:['固定假设','固定假设','固定假设','固定假设','固定假设','固定假设','固定假设','固定假设']},
+  {id:'growth',name:'先增后降',sub:'峰值$10亿·8年$47亿',
+   rev:[300,600,1000,800,600,400,250,150],
+   stages:['冷启动期','高速增长','峰值爆发','第一波衰退','稳定期','加速下滑','长尾期','尾部期']},
+];
+
+let dcRev=[500,750,630,470,320,200,110,60];
+let dcStages=['上线首年','峰值年','开始衰退','加速下滑','稳定收缩','内容ROI下降','接近临界线','尾部期'];
+let dcActivePreset='standard';
+let dcChartView='cum';
+let dcMainChart=null, dcRevChart=null;
+let dcG=null;
+
+const dcToY=m=>+(m*DC_FX*DC_TAX/100).toFixed(4);
+const dcYi=m=>'¥'+(m*DC_FX*DC_TAX/100).toFixed(2)+'亿';
+const dcYiS=m=>'¥'+(m*DC_FX*DC_TAX/100).toFixed(1)+'亿';
+const dcUsd=m=>'$'+m.toFixed(2)+'M';
+const dcSet=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+const dcSc=(id,v,c,anim=false)=>{
+  const e=document.getElementById(id);if(!e)return;
+  if(anim&&e.classList.contains('dc-be-val')){
+    e.classList.add('dc-fade');
+    setTimeout(()=>{e.textContent=v;if(c)e.style.color=c;
+      void e.offsetWidth; // force reflow
+      e.classList.remove('dc-fade');},260);
+  } else {e.textContent=v;if(c)e.style.color=c;}
+};
+
+// 计算引擎（衰减版，接受rev8数组）
+function dcCalcWithDecay(mode,lic,tiers,rev8,pbTotal=50,discRate=0.02){
+  let pb=mode==='old'?null:0,cum=0;
+  const cr={FPS:0,MOBA:0,'沙盒':0};
+  const rows=[],pbRows=[];
+  for(const yr of DC_YEARS){
+    let cash=0,pb_in=0,pb_used=0;
+    if(mode!=='old'&&yr<=2027){const amt=pbTotal/2;cash+=amt;pb+=amt;pb_in=amt;}
+    const yrIdx=yr-2029;
+    const baseRev=yrIdx<0?0:yrIdx<rev8.length?rev8[yrIdx]:rev8[rev8.length-1];
+    for(const[n,pyr,q]of PROJS_DEF){
+      if(yr<pyr)continue;
+      const f=yr===pyr?FRAC[q]:1, rev=baseRev*f, cp=cr[n];
+      if(mode==='old'){
+        if(yr===pyr)cash+=5;if(yr>pyr)cash+=.25;
+        cash+=cumRS(cp,rev,T_OLD);
+      }else{
+        if(yr===pyr){const t=lic+.015,fr=Math.min(pb,t);pb-=fr;pb_used+=fr;cash+=t-fr;}
+        const rs=cumRS(cp,rev,tiers),rf=Math.min(pb,rs);pb-=rf;pb_used+=rf;cash+=rs-rf;
+      }
+      cr[n]+=rev;
+    }
+    cum+=cash;
+    rows.push({yr,cash:+cash.toFixed(4),cum:+cum.toFixed(4)});
+    pbRows.push({yr,pb_in,pb_used:+pb_used.toFixed(4)});
+  }
+  const npvArr=rows.map((r,i)=>+(r.cash/Math.pow(1+discRate,i)).toFixed(4));
+  let s=0;const npvCum=npvArr.map(v=>+(s+=v).toFixed(4));
+  return{rows,npvCum};
+}
+
+function dcRunAll(rev8){
+  const dO=dcCalcWithDecay('old',0,T_OLD,rev8);
+  const dA=dcCalcWithDecay('new',15,T_AAA,rev8);
+  const d1=dcCalcWithDecay('aa1',7.5,T_AA1,rev8);
+  const d2=dcCalcWithDecay('aa2',5,T_AA2,rev8);
+  const findBE=(a,b)=>DC_YEARS.find((_,i)=>b[i].cum<=a[i].cum)||null;
+  return{dO,dA,d1,d2,
+    be_aaa:findBE(dO.rows,dA.rows),
+    be_aa1:findBE(dO.rows,d1.rows),
+    be_aa2:findBE(dO.rows,d2.rows)};
+}
+
+// 统计摘要
+function dcUpdateStats(){
+  const peak=Math.max(...dcRev);
+  const peakIdx=dcRev.indexOf(peak);
+  const total=dcRev.reduce((s,v)=>s+v,0);
+  const last=dcRev[7];
+  dcSet('dc-stat-peak','$'+(peak/100).toFixed(1)+'亿');
+  dcSet('dc-stat-peak-yr',`${2029+peakIdx}年（上线第${peakIdx+1}年）`);
+  dcSet('dc-stat-total','$'+(total/100).toFixed(1)+'亿');
+  dcSet('dc-stat-last','$'+(last/100).toFixed(1)+'亿');
+  dcSet('dc-stat-last-pct',`约为峰值的${Math.round(last/peak*100)}%`);
+}
+
+// 渲染汇总卡片
+function dcRenderCards(d){
+  const L=DC_N-1;
+  const lO=d.dO.rows[L].cum,lA=d.dA.rows[L].cum,l1=d.d1.rows[L].cum,l2=d.d2.rows[L].cum;
+  const nO=d.dO.npvCum[L],nA=d.dA.npvCum[L],n1=d.d1.npvCum[L],n2=d.d2.npvCum[L];
+  function setCard(pfx,val,npv){
+    dcSet(`dc-${pfx}-rmb`,dcYi(val));
+    dcSet(`dc-${pfx}-usd`,dcUsd(val));
+    dcSet(`dc-${pfx}-npv`,dcYi(npv));
+    dcSet(`dc-${pfx}-avg`,dcYiS(val/DC_N)+'/年');
+  }
+  setCard('old',lO,nO);setCard('aaa',lA,nA);setCard('aa1',l1,n1);setCard('aa2',l2,n2);
+  // vs 旧报价
+  const vsEl=(id,val,base)=>{
+    const el=document.getElementById(id);if(!el)return;
+    const diff=+(val-base).toFixed(2);
+    if(Math.abs(diff)<0.01){el.textContent='与旧报价持平';el.style.color='var(--t-muted)';return;}
+    el.textContent=(diff<0?'↓ 节省 ':'↑ 多付 ')+dcYiS(Math.abs(diff))+' vs 旧报价';
+    el.style.color=diff<0?'var(--save)':'var(--risk)';
+  };
+  vsEl('dc-aaa-vs',lA,lO);vsEl('dc-aa1-vs',l1,lO);vsEl('dc-aa2-vs',l2,lO);
+  // AAA badge
+  const vals=[lO,lA,l1,l2],minIdx=vals.indexOf(Math.min(...vals));
+  const badge=document.getElementById('dc-aaa-badge');
+  if(badge){badge.textContent=minIdx===1?'综合最优':'';badge.style.display=minIdx===1?'':'none';}
+  // 持平年（增强版）
+  const _beAnim=arguments[1]||false;
+  function dcRenderBE(sfx,beYr,color,rows_new,rows_old){
+    const valEl=document.getElementById(`dc-be-${sfx}`);
+    const subEl=document.getElementById(`dc-be-sub-${sfx}`);
+    const barEl=document.getElementById(`dc-be-bar-${sfx}`);
+    const cardEl=document.getElementById(`dc-be-card-${sfx}`);
+    if(!valEl)return;
+    // 计算持平后累计节省（末年差值）
+    const lastDiff=rows_old?+(rows_old[DC_N-1].cum - rows_new[DC_N-1].cum).toFixed(2):0;
+    const hasBE=!!beYr;
+    const valText=hasBE?`${beYr}年（第${beYr-2029+1}年）`:'11年内未持平';
+    const subText=hasBE
+      ?(lastDiff>0.01?`持平后累计节省 ${dcYiS(lastDiff)}`:'持平后趋势相近')
+      :(lastDiff<-0.01?`末年多付 ${dcYiS(Math.abs(lastDiff))}`:'高费率无法回收');
+    const pct=hasBE?Math.round((beYr-2029+1)/8*100):100;
+    const barColor=hasBE?color:'rgba(220,38,38,.25)';
+    const borderColor=hasBE?color.replace('var(','').replace(')',''):'';
+    if(_beAnim){
+      valEl.classList.add('dc-fade');
+      if(subEl)subEl.style.opacity='0';
+      setTimeout(()=>{
+        valEl.textContent=valText;
+        valEl.style.color=hasBE?color:'var(--risk)';
+        if(subEl){subEl.textContent=subText;subEl.style.opacity='1';}
+        if(barEl){barEl.style.width=pct+'%';barEl.style.background=barColor;}
+        if(cardEl){cardEl.style.borderColor=hasBE?'rgba(var(--c-aaa-rgb,37,99,235),.25)':'';
+          cardEl.style.boxShadow=hasBE?'':'';}
+        void valEl.offsetWidth;
+        valEl.classList.remove('dc-fade');
+      },260);
+    } else {
+      valEl.textContent=valText;
+      valEl.style.color=hasBE?color:'var(--risk)';
+      if(subEl){subEl.textContent=subText;}
+      if(barEl){
+        // 先归零再动画
+        barEl.style.transition='none';barEl.style.width='0%';
+        void barEl.offsetWidth;
+        barEl.style.transition='';
+        setTimeout(()=>{barEl.style.width=pct+'%';barEl.style.background=barColor;},30);
+      }
+    }
+  }
+  dcRenderBE('aaa',d.be_aaa,'var(--c-aaa)',d.dA.rows,d.dO.rows);
+  dcRenderBE('aa1',d.be_aa1,'var(--c-aa1)',d.d1.rows,d.dO.rows);
+  dcRenderBE('aa2',d.be_aa2,'var(--c-aa2)',d.d2.rows,d.dO.rows);
+}
+
+// 渲染图表
+function dcRenderCharts(d){
+  // 上线虚线插件
+  const lp={id:'dc-lp',afterDraw(c){
+    const{ctx:x,chartArea:a,scales:sc}=c;
+    [[2029,'rgba(181,71,8,.35)']].forEach(([yr,col])=>{
+      const i=DC_YEARS.indexOf(yr);if(i<0)return;
+      const px=sc.x.getPixelForTick(i);
+      x.save();x.setLineDash([4,4]);x.strokeStyle=col;x.lineWidth=1.5;
+      x.beginPath();x.moveTo(px,a.top);x.lineTo(px,a.bottom);x.stroke();
+      x.restore();
+    });
+  }};
+  if(dcMainChart)dcMainChart.destroy();
+  const isCum=dcChartView==='cum';
+  const od=d.dO.rows.map(r=>dcToY(isCum?r.cum:r.cash));
+  const ad=d.dA.rows.map(r=>dcToY(isCum?r.cum:r.cash));
+  const a1=d.d1.rows.map(r=>dcToY(isCum?r.cum:r.cash));
+  const a2=d.d2.rows.map(r=>dcToY(isCum?r.cum:r.cash));
+  dcMainChart=new Chart(document.getElementById('dc-main-chart').getContext('2d'),{
+    type:'line',plugins:[lp],
+    data:{labels:DC_YEARS.map(String),datasets:[
+      {label:'旧报价',data:od,borderColor:'#8C7355',backgroundColor:'rgba(140,115,85,.04)',borderWidth:2,fill:true,tension:.3,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#8C7355',pointBorderColor:'#fff',pointBorderWidth:1.5},
+      {label:'新AAA',data:ad,borderColor:'#1C5499',backgroundColor:'rgba(28,84,153,.05)',borderWidth:2.5,fill:true,tension:.3,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#1C5499',pointBorderColor:'#fff',pointBorderWidth:1.5},
+      {label:'新AA方案一',data:a1,borderColor:'#5B4B8A',backgroundColor:'rgba(91,75,138,.02)',borderWidth:2,borderDash:[6,3],fill:true,tension:.3,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#5B4B8A',pointBorderColor:'#fff',pointBorderWidth:1.5,pointStyle:'rectRot'},
+      {label:'新AA方案二',data:a2,borderColor:'#1B6B6B',backgroundColor:'rgba(27,107,107,.02)',borderWidth:2,borderDash:[2,3],fill:true,tension:.3,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#1B6B6B',pointBorderColor:'#fff',pointBorderWidth:1.5,pointStyle:'triangle'},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},animation:{duration:250},
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'rgba(17,24,39,.95)',titleColor:'rgba(255,255,255,.45)',bodyColor:'rgba(255,255,255,.85)',padding:12,cornerRadius:8,borderColor:'rgba(255,255,255,.08)',borderWidth:1,
+          titleFont:{family:'IBM Plex Mono',size:10},bodyFont:{family:'IBM Plex Mono',size:11},
+          callbacks:{title:i=>`${i[0].label}年`,label:c=>{const s=['●','■','◆','▲'][c.datasetIndex];return ` ${s} ${c.dataset.label}  ¥${c.parsed.y.toFixed(2)}亿`;}}}},
+      scales:{x:{grid:{color:'rgba(17,24,39,.04)'},border:{display:false},ticks:{font:{family:'IBM Plex Mono',size:9.5},color:'#9CA3AF',padding:4}},
+        y:{grid:{color:'rgba(17,24,39,.04)'},border:{display:false},ticks:{font:{family:'IBM Plex Mono',size:9.5},color:'#9CA3AF',callback:v=>'¥'+v.toFixed(1)+'亿',maxTicksLimit:7},beginAtZero:true}}}
+  });
+  // 流水柱状图
+  if(dcRevChart)dcRevChart.destroy();
+  const revData=DC_YEARS.map((yr,i)=>{
+    const yrIdx=yr-2029;
+    return yrIdx>=0&&yrIdx<dcRev.length?+(dcRev[yrIdx]/100).toFixed(3):0;
+  });
+  const peakVal=Math.max(...revData.filter(v=>v>0));
+  const barColors=revData.map(v=>v>=peakVal-0.001&&v>0?'#1C5499':'#93C5FD');
+  dcRevChart=new Chart(document.getElementById('dc-rev-chart').getContext('2d'),{
+    type:'bar',
+    data:{labels:DC_YEARS.map(String),datasets:[
+      {label:'年流水',data:revData,backgroundColor:barColors,borderRadius:3,borderSkipped:false},
+      {label:'趋势线',data:revData,type:'line',borderColor:'#6B7FF0',borderWidth:2,fill:false,tension:.4,pointRadius:4,pointBackgroundColor:'#6B7FF0',pointBorderColor:'#fff',pointBorderWidth:1.5},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:250},
+      plugins:{legend:{labels:{font:{family:'IBM Plex Mono',size:9.5},color:'#9CA3AF',boxWidth:10}},
+        tooltip:{backgroundColor:'rgba(17,24,39,.95)',titleFont:{family:'IBM Plex Mono',size:10},bodyFont:{family:'IBM Plex Mono',size:11},padding:10,cornerRadius:6,
+          callbacks:{label:c=>{const yrIdx=DC_YEARS.indexOf(parseInt(c.label))-3;const stage=yrIdx>=0&&yrIdx<dcStages.length?dcStages[yrIdx]:'';return [` $${c.parsed.y.toFixed(2)}亿/项目`,stage?` (${stage})`:''].filter(Boolean);}}}},
+      scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{family:'IBM Plex Mono',size:9.5},color:'#9CA3AF'}},
+        y:{grid:{color:'rgba(17,24,39,.04)'},border:{display:false},ticks:{font:{family:'IBM Plex Mono',size:9.5},color:'#9CA3AF',callback:v=>'$'+v.toFixed(1)+'亿'},beginAtZero:true}}}
+  });
+}
+
+function dcSwitchChart(v){
+  dcChartView=v;
+  document.getElementById('dc-csw-cum').className='ctab'+(v==='cum'?' on':'');
+  document.getElementById('dc-csw-ann').className='ctab'+(v==='ann'?' on':'');
+  dcSet('dc-chart-title',v==='cum'?'四方案累计支出（亿元）':'四方案当年支出（亿元）');
+  if(dcG){
+    // 先让卡片淡出，图表更新后再淡入
+    ['dc-be-aaa','dc-be-aa1','dc-be-aa2'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.classList.add('dc-fade');
+      const sub=document.getElementById(id.replace('dc-be-','dc-be-sub-'));
+      if(sub)sub.style.opacity='0';
+    });
+    setTimeout(()=>dcRenderCards(dcG,true),80);
+    dcRenderCharts(dcG,true);
+  }
+}
+window.dcSwitchChart=dcSwitchChart;
+
+// 滑块
+function dcBuildSliders(){
+  const grid=document.getElementById('decay-slider-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  for(let i=0;i<8;i++){
+    const yr=2029+i;
+    const card=document.createElement('div');
+    card.style.cssText='background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px';
+    card.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:12px;font-weight:600;color:var(--t-primary)">${yr}</span>
+        <span style="font-family:var(--fm);font-size:12px;font-weight:600;color:var(--c-aaa)" id="dc-rv-val-${i}">$${dcRev[i]/100}亿</span>
+      </div>
+      <div style="font-family:var(--fm);font-size:10px;color:var(--t-faint);margin-bottom:5px" id="dc-rv-rmb-${i}">¥${(dcRev[i]*DC_FX*DC_TAX/100).toFixed(1)}亿</div>
+      <input type="range" style="width:100%;height:4px;border-radius:2px;cursor:pointer;-webkit-appearance:none;appearance:none;outline:none;accent-color:var(--c-aaa);background:linear-gradient(to right,var(--c-aaa) 0%,var(--c-aaa) var(--pct,50%),var(--border-strong) var(--pct,50%),var(--border-strong) 100%)" id="dc-rv-sl-${i}" min="0" max="1500" step="50" value="${dcRev[i]}" oninput="dcOnRevChange(${i},this.value)">
+      <div style="font-size:10px;color:var(--t-muted);margin-top:5px;font-style:italic;min-height:14px" id="dc-rv-stage-${i}">${dcStages[i]||''}</div>`;
+    grid.appendChild(card);
+  }
+  dcSyncSliderGradients();
+}
+
+function dcSyncSliders(){
+  for(let i=0;i<8;i++){
+    const sl=document.getElementById(`dc-rv-sl-${i}`);
+    if(sl){sl.value=dcRev[i];dcUpdateSliderDisplay(i,dcRev[i]);}
+    const stg=document.getElementById(`dc-rv-stage-${i}`);
+    if(stg)stg.textContent=dcStages[i]||'';
+  }
+  dcSyncSliderGradients();
+}
+
+function dcSyncSliderGradients(){
+  for(let i=0;i<8;i++){
+    const sl=document.getElementById(`dc-rv-sl-${i}`);
+    if(sl){const pct=((+sl.value)/1500*100).toFixed(1)+'%';sl.style.setProperty('--pct',pct);}
+  }
+}
+
+function dcUpdateSliderDisplay(i,val){
+  const v=document.getElementById(`dc-rv-val-${i}`);
+  const r=document.getElementById(`dc-rv-rmb-${i}`);
+  if(v)v.textContent='$'+(val/100).toFixed(1)+'亿';
+  if(r)r.textContent='¥'+(val*DC_FX*DC_TAX/100).toFixed(1)+'亿';
+}
+
+function dcOnRevChange(i,val){
+  val=+val;
+  dcRev[i]=val;
+  dcUpdateSliderDisplay(i,val);
+  const sl=document.getElementById(`dc-rv-sl-${i}`);
+  if(sl){const pct=(val/1500*100).toFixed(1)+'%';sl.style.setProperty('--pct',pct);}
+  dcActivePreset='custom';
+  document.querySelectorAll('.dc-preset-btn').forEach(b=>{b.className='dc-preset-btn ctab';});
+  dcRefresh();
+}
+window.dcOnRevChange=dcOnRevChange;
+
+// 预设按钮
+function dcBuildPresets(){
+  const row=document.getElementById('decay-preset-row');
+  if(!row)return;
+  DC_PRESETS.forEach(p=>{
+    const btn=document.createElement('button');
+    btn.className='dc-preset-btn ctab'+(p.id===dcActivePreset?' on':'');
+    btn.style.cssText='display:flex;flex-direction:column;align-items:flex-start;gap:2px;height:auto;padding:7px 16px';
+    btn.innerHTML=`<span style="font-size:12px;font-weight:600">${p.name}</span><span style="font-family:var(--fm);font-size:10px;color:var(--t-muted);font-weight:400">${p.sub}</span>`;
+    btn.onclick=()=>dcApplyPreset(p.id);
+    row.appendChild(btn);
+  });
+}
+
+function dcApplyPreset(id){
+  const p=DC_PRESETS.find(x=>x.id===id);if(!p)return;
+  dcActivePreset=id;
+  dcRev=[...p.rev];
+  dcStages=[...p.stages];
+  document.querySelectorAll('.dc-preset-btn').forEach((b,i)=>{
+    b.className='dc-preset-btn ctab'+(DC_PRESETS[i].id===id?' on':'');
+  });
+  dcSyncSliders();
+  dcRefresh();
+}
+window.dcApplyPreset=dcApplyPreset;
+
+// 主刷新
+function dcRefresh(){
+  dcUpdateStats();
+  dcG=dcRunAll(dcRev);
+  dcRenderCards(dcG);
+  dcRenderCharts(dcG);
+}
+
+// 初始化
+dcBuildPresets();
+dcBuildSliders();
+dcRefresh();
+
 })();
 </script>
 </body>
